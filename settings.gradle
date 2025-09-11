@@ -1,7 +1,6 @@
 rootProject.name = 'spot'
 
 include 'app:boot'
-include 'app:orchestration'
 include 'app:config'
 
 include 'auth:application'
