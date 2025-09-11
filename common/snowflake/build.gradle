@@ -1,0 +1,4 @@
+dependencies {
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.10.2"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.2'
+}

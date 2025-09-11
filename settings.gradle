@@ -1,0 +1,6 @@
+rootProject.name = 'spot'
+
+include 'app'
+include 'common:snowflake'
+include 'common:api'
+

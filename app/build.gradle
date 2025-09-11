@@ -1,0 +1,18 @@
+plugins {
+    id "org.springframework.boot"           // 여기서만 실제 적용
+    id "io.spring.dependency-management"
+    id "java"
+}
+
+dependencies {
+    // 내부 모듈
+    implementation project(":common:api")
+
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
