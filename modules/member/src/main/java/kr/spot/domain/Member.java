@@ -7,6 +7,7 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import kr.spot.base.BaseEntity;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.vo.Email;
@@ -26,6 +27,9 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member extends BaseEntity {
 
+    @Id
+    private Long id;
+
     @Embedded
     @AttributeOverride(name = "value",
             column = @Column(name = "email", nullable = false, unique = true))
@@ -34,10 +38,10 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    public static Member of(Email email, String name) {
+    public static Member of(Long id, Email email, String name) {
         validateEmail(email);
         validateName(name);
-        return new Member(email, name);
+        return new Member(id, email, name);
     }
 
     private static void validateName(String name) {

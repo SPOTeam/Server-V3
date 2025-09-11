@@ -4,9 +4,11 @@ include 'app:boot'
 include 'app:orchestration'
 include 'app:config'
 
+include 'auth:application'
+include 'auth:port'
+
 include 'common:snowflake'
 include 'common:api'
 
 include 'modules:member'
 include 'modules:shared'
-include 'modules:auth'

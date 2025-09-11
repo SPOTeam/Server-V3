@@ -3,7 +3,6 @@ package kr.spot.base;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 import kr.spot.base.enums.Status;
@@ -18,9 +17,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
-
-    @Id
-    private Long id;
 
     @Setter(AccessLevel.PROTECTED)
     @CreatedDate

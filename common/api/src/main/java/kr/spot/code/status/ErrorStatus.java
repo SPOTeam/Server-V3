@@ -15,6 +15,12 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNAUTHORIZED(401, "COMMON4001", "인증되지 않은 요청입니다."),
     _FORBIDDEN(403, "COMMON4002", "접근이 거부되었습니다."),
 
+    // JWT 관련
+    _EMPTY_JWT(400, "COMMON4005", "JWT 토큰이 비어있습니다."),
+    _INVALID_JWT(400, "COMMON4006", "유효하지 않은 JWT token입니다."),
+    _EXPIRED_JWT(400, "COMMON4007", "만료된 JWT token입니다."),
+    _UNSUPPORTED_JWT(400, "COMMON4008", "지원되지 않는 JWT token입니다."),
+
 
     // 회원 관련
     _INVALID_EMAIL_FORMAT(400, "MEMBER4000", "유효하지 않은 이메일 형식입니다."),

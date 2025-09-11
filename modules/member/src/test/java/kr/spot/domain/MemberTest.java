@@ -1,5 +1,6 @@
 package kr.spot.domain;
 
+import static kr.spot.common.fixture.MemberFixture.ID;
 import static kr.spot.common.fixture.MemberFixture.NAME;
 import static kr.spot.common.fixture.MemberFixture.email;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -21,7 +22,7 @@ class MemberTest {
         Email email = email();
 
         // when
-        Member member = Member.of(email, NAME);
+        Member member = Member.of(ID, email, NAME);
 
         // then
         assertAll(
@@ -38,15 +39,15 @@ class MemberTest {
         Email email = email();
 
         // when & then
-        assertThrows(GeneralException.class, () -> Member.of(email, null));
-        assertThrows(GeneralException.class, () -> Member.of(email, ""));
-        assertThrows(GeneralException.class, () -> Member.of(email, "   "));
+        assertThrows(GeneralException.class, () -> Member.of(ID, email, null));
+        assertThrows(GeneralException.class, () -> Member.of(ID, email, ""));
+        assertThrows(GeneralException.class, () -> Member.of(ID, email, "   "));
     }
 
     @Test
     @DisplayName("이메일이 null 이거나 공백일 경우 회원 생성에 실패한다.")
     void should_fail_to_create_member_when_email_is_null_or_empty() {
         // when & then
-        assertThrows(GeneralException.class, () -> Member.of(null, NAME));
+        assertThrows(GeneralException.class, () -> Member.of(ID, null, NAME));
     }
 }

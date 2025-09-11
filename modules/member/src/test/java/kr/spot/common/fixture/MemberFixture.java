@@ -10,6 +10,7 @@ public class MemberFixture {
     public static final String NAME = "스팟";
 
     public static final String INVALID_EMAIL = "invalid-email";
+    public static final long ID = 1L;
 
     public static Email email() {
         return Email.of(EMAIL);
@@ -20,7 +21,7 @@ public class MemberFixture {
     }
 
     public static Member member() {
-        return Member.of(email(), NAME);
+        return Member.of(ID, email(), NAME);
     }
 
 
