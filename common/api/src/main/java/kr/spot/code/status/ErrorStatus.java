@@ -15,10 +15,12 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNAUTHORIZED(401, "COMMON4001", "인증되지 않은 요청입니다."),
     _FORBIDDEN(403, "COMMON4002", "접근이 거부되었습니다."),
 
+
     // 회원 관련
     _INVALID_EMAIL_FORMAT(400, "MEMBER4000", "유효하지 않은 이메일 형식입니다."),
     _NAME_CAN_NOT_NULL_OR_EMPTY(400, "MEMBER4001", "이름은 null 또는 공백일 수 없습니다."),
     _EMAIL_CAN_NOT_NULL_OR_EMPTY(400, "MEMBER4002", "이메일은 null 또는 공백일 수 없습니다."),
+    _MEMBER_UNSUPPORTED_LOGIN_TYPE(400, "MEMBER4003", "지원하지 않는 로그인 타입입니다."),
     ;
 
     private final int httpStatus;
