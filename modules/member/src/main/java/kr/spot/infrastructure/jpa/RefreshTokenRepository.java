@@ -1,4 +1,4 @@
-package kr.spot.jpa;
+package kr.spot.infrastructure.jpa;
 
 import kr.spot.domain.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
