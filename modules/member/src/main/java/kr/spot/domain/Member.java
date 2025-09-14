@@ -7,8 +7,11 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import kr.spot.base.BaseEntity;
+import kr.spot.base.enums.LoginType;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.vo.Email;
 import kr.spot.exception.GeneralException;
@@ -38,10 +41,19 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    public static Member of(Long id, Email email, String name) {
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private LoginType loginType;
+
+    @Column
+    private String profileImageUrl;
+
+    /* ------------------------------- Method  ------------------------------- */
+
+    public static Member of(Long id, Email email, String name, LoginType loginType, String profileImageUrl) {
         validateEmail(email);
         validateName(name);
-        return new Member(id, email, name);
+        return new Member(id, email, name, loginType, profileImageUrl);
     }
 
     private static void validateName(String name) {
