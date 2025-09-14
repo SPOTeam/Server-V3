@@ -41,4 +41,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 .idea
-app/src/main/resources/application.yml
+app/boot/src/main/resources/application.yml
+modules/auth/src/main/resources/application.yml
