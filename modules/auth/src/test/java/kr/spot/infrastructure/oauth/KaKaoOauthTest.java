@@ -55,7 +55,7 @@ class KaKaoOauthTest {
     void should_request_access_token_with_correct_parameters() {
         // given
         String code = "abc";
-        KaKaoOAuthTokenDTO token = new KaKaoOAuthTokenDTO("atk", "rtk", null, null, null);
+        KaKaoOAuthTokenDTO token = new KaKaoOAuthTokenDTO("atk", "atk", null, null, null);
         when(kaKaoAuthClient.getKaKaoAccessToken(
                 "application/x-www-form-urlencoded;charset=utf-8",
                 "authorization_code",
