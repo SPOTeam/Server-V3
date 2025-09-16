@@ -8,9 +8,9 @@ dependencies {
     // Project Dependencies
     implementation project(":common:api")
     implementation project(":common:snowflake")
-    implementation project(":common:events")
 
     implementation project(":modules:shared")
+    implementation project(":modules:member-api")
 
     // Spring Boot Starters
     implementation "org.springframework.boot:spring-boot-starter-web"

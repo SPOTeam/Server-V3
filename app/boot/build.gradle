@@ -9,11 +9,11 @@ dependencies {
 
     implementation project(":common:api")
     implementation project(":common:snowflake")
-    implementation project(":common:events")
 
     implementation project(":modules:shared")
-    implementation project(":modules:member")
     implementation project(":modules:auth")
+    implementation project(":modules:member")
+    implementation project(":modules:member-api")
 
 //    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
