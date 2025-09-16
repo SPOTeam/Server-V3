@@ -8,9 +8,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import jakarta.annotation.PostConstruct;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Date;
 import kr.spot.application.token.TokenProvider;
 import kr.spot.code.status.ErrorStatus;
@@ -45,15 +42,13 @@ public class JwtTokenProvider implements TokenProvider {
         this.REFRESH_TOKEN_EXPIRATION_TIME = REFRESH_TOKEN_EXPIRATION_TIME;
     }
 
-
-    @PostConstruct
-    protected void init() {
-        JWT_SECRET_KEY = Base64.getEncoder().encodeToString(JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-    }
+//    @PostConstruct
+//    protected void init() {
+//        JWT_SECRET_KEY = Base64.getEncoder().encodeToString(JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+//    }
 
     @Override
     public TokenDTO createToken(final Long memberId) {
-
         Date now = new Date();
         String accessToken = generateToken(memberId, now, ACCESS_TOKEN_EXPIRATION_TIME, ACCESS); // 액세스 토큰 생성
         String refreshToken = generateToken(memberId, now, REFRESH_TOKEN_EXPIRATION_TIME, REFRESH); // 리프레시 토큰 생성

@@ -5,8 +5,8 @@ include 'app:config'
 
 include 'common:snowflake'
 include 'common:api'
-include 'common:events'
 
 include 'modules:member'
+include 'modules:member-api'
 include 'modules:auth'
 include 'modules:shared'
