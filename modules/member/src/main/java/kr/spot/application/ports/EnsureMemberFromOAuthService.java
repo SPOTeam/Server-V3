@@ -1,11 +1,11 @@
 package kr.spot.application.ports;
 
-import kr.spot.Snowflake;
 import kr.spot.base.enums.LoginType;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.Member;
 import kr.spot.domain.vo.Email;
 import kr.spot.exception.GeneralException;
+import kr.spot.impl.Snowflake;
 import kr.spot.infrastructure.jpa.MemberRepository;
 import kr.spot.ports.EnsureMemberFromOAuthPort;
 import lombok.RequiredArgsConstructor;

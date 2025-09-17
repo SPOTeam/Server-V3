@@ -1,7 +1,10 @@
 package kr.spot.domain.vo;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import kr.spot.code.status.ErrorStatus;
+import kr.spot.domain.enums.FeeCategory;
 import kr.spot.exception.GeneralException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -16,8 +19,11 @@ import lombok.NoArgsConstructor;
 public class Fee {
 
     private boolean hasFee;
-
+    
     private Integer amount;
+
+    @Enumerated(EnumType.STRING)
+    private FeeCategory feeCategory;
 
     public static Fee of(boolean hasFee, Integer amount) {
         if (!hasFee) {
@@ -27,6 +33,6 @@ public class Fee {
                 throw new GeneralException(ErrorStatus._INVALID_FEE_AMOUNT);
             }
         }
-        return new Fee(hasFee, amount);
+        return new Fee(hasFee, amount, FeeCategory.getFeeCategory(amount));
     }
 }

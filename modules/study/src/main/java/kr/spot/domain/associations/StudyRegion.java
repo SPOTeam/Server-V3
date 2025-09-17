@@ -2,6 +2,7 @@ package kr.spot.domain.associations;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import kr.spot.base.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,16 +16,16 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("status = 'ACTIVE'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class StudyRegion {
+public class StudyRegion extends BaseEntity {
 
     @Id
     private Long id;
 
     private Long studyId;
 
-    private Long regionCode;
+    private String regionCode;
 
-    public static StudyRegion of(Long id, Long studyId, Long regionCode) {
+    public static StudyRegion of(Long id, Long studyId, String regionCode) {
         return new StudyRegion(id, studyId, regionCode);
     }
 }

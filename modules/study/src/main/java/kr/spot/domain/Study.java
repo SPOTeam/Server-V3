@@ -27,25 +27,28 @@ public class Study extends BaseEntity {
     @Id
     private Long id;
 
+    private Long leaderId;
+
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private Integer maxMembers;
 
-    @Column
-    private String imageUrl;
-
     @Embedded
     private Fee fee;
+
+    @Column
+    private String imageUrl;
 
     @Column(length = 1000)
     private String description;
 
-    public static Study of(Long id, String name, Integer maxMembers, String imageUrl, Fee fee, String description) {
+    public static Study of(Long id, Long leaderId, String name, Integer maxMembers, Fee fee, String imageUrl,
+                           String description) {
         validateStudyNameIsNotBlank(name);
         validateMaxMembers(maxMembers);
-        return new Study(id, name, maxMembers, imageUrl, fee, description);
+        return new Study(id, leaderId, name, maxMembers, fee, imageUrl, description);
     }
 
     private static void validateStudyNameIsNotBlank(String name) {
