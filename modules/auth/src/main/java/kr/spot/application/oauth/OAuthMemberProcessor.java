@@ -1,11 +1,11 @@
 package kr.spot.application.oauth;
 
-import kr.spot.annotations.EnsureMemberFromOAuthPort;
 import kr.spot.application.oauth.dto.OAuthProfile;
 import kr.spot.application.token.TokenProvider;
 import kr.spot.domain.RefreshToken;
 import kr.spot.impl.Snowflake;
 import kr.spot.infrastructure.jpa.RefreshTokenRepository;
+import kr.spot.ports.EnsureMemberFromOAuthPort;
 import kr.spot.presentation.dto.TokenDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

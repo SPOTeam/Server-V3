@@ -5,31 +5,22 @@ plugins {
 }
 
 dependencies {
-    implementation project(":app:config")
-
+    // Project Dependencies
     implementation project(":common:api")
     implementation project(":common:snowflake")
 
     implementation project(":modules:shared")
-
-    implementation project(":modules:auth")
-    implementation project(":modules:study")
-    implementation project(":modules:member")
-    implementation project(":modules:post")
-
     implementation project(":modules:member-api")
     implementation project(":modules:auth-api")
 
-//    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'com.mysql:mysql-connector-j'
-
+    // Spring Boot Starters
     implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 
-    compileOnly "org.projectlombok:lombok"
-    annotationProcessor "org.projectlombok:lombok"
-
+    // Testing
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 }
