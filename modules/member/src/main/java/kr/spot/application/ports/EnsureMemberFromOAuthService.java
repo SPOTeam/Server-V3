@@ -1,13 +1,13 @@
 package kr.spot.application.ports;
 
 import kr.spot.IdGenerator;
-import kr.spot.annotations.EnsureMemberFromOAuthPort;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.Member;
 import kr.spot.domain.enums.LoginType;
 import kr.spot.domain.vo.Email;
 import kr.spot.exception.GeneralException;
 import kr.spot.infrastructure.jpa.MemberRepository;
+import kr.spot.ports.EnsureMemberFromOAuthPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
