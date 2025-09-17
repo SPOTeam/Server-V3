@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import kr.spot.base.enums.LoginType;
+import kr.spot.domain.enums.LoginType;
 import kr.spot.domain.vo.Email;
 import kr.spot.exception.GeneralException;
 import org.junit.jupiter.api.DisplayName;

@@ -11,11 +11,15 @@ dependencies {
     implementation project(":common:snowflake")
 
     implementation project(":modules:shared")
+    implementation project(":modules:auth-api")
     implementation project(":modules:member-api")
 
     // Spring Boot Starters
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // Testing
     testImplementation "org.springframework.boot:spring-boot-starter-test"

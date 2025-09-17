@@ -5,7 +5,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import kr.spot.base.BaseEntity;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.vo.Fee;
 import kr.spot.exception.GeneralException;

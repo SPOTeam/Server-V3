@@ -7,10 +7,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import kr.spot.base.enums.LoginType;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.common.fixture.MemberFixture;
 import kr.spot.domain.Member;
+import kr.spot.domain.enums.LoginType;
 import kr.spot.exception.GeneralException;
 import kr.spot.infrastructure.jpa.MemberRepository;
 import org.junit.jupiter.api.DisplayName;

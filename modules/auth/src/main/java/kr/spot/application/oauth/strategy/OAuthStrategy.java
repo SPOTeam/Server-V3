@@ -2,7 +2,7 @@ package kr.spot.application.oauth.strategy;
 
 
 import kr.spot.application.oauth.dto.OAuthProfile;
-import kr.spot.base.enums.LoginType;
+import kr.spot.domain.enums.LoginType;
 
 public interface OAuthStrategy {
 

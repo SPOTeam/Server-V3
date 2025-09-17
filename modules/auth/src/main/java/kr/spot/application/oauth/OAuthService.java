@@ -2,12 +2,14 @@ package kr.spot.application.oauth;
 
 
 import kr.spot.application.oauth.strategy.OAuthStrategy;
-import kr.spot.base.enums.LoginType;
+import kr.spot.domain.enums.LoginType;
 import kr.spot.presentation.dto.TokenDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class OAuthService {
 

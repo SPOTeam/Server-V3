@@ -2,7 +2,7 @@ package kr.spot.domain.associations;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import kr.spot.base.BaseEntity;
+import kr.spot.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

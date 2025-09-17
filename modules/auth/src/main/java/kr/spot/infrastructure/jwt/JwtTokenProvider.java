@@ -13,14 +13,12 @@ import kr.spot.application.token.TokenProvider;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.exception.GeneralException;
 import kr.spot.presentation.dto.TokenDTO;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider implements TokenProvider {
 
     public static final String MEMBER_ID = "memberId";
@@ -28,9 +26,9 @@ public class JwtTokenProvider implements TokenProvider {
     public static final String ACCESS = "access";
     public static final String REFRESH = "refresh";
 
-    private String JWT_SECRET_KEY;
-    private Long ACCESS_TOKEN_EXPIRATION_TIME;
-    private Long REFRESH_TOKEN_EXPIRATION_TIME;
+    private final String JWT_SECRET_KEY;
+    private final Long ACCESS_TOKEN_EXPIRATION_TIME;
+    private final Long REFRESH_TOKEN_EXPIRATION_TIME;
 
     public JwtTokenProvider(
             @Value("${token.access_secret}") final String JWT_SECRET_KEY,
@@ -41,11 +39,6 @@ public class JwtTokenProvider implements TokenProvider {
         this.ACCESS_TOKEN_EXPIRATION_TIME = ACCESS_TOKEN_EXPIRATION_TIME;
         this.REFRESH_TOKEN_EXPIRATION_TIME = REFRESH_TOKEN_EXPIRATION_TIME;
     }
-
-//    @PostConstruct
-//    protected void init() {
-//        JWT_SECRET_KEY = Base64.getEncoder().encodeToString(JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-//    }
 
     @Override
     public TokenDTO createToken(final Long memberId) {

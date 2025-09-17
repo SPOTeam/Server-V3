@@ -1,5 +1,6 @@
-package kr.spot;
+package kr.spot.config;
 
+import kr.spot.IdGenerator;
 import kr.spot.impl.Snowflake;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;

@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import kr.spot.base.BaseEntity;
+import kr.spot.domain.BaseEntity;
 import kr.spot.domain.enums.Style;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

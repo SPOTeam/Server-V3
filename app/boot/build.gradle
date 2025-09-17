@@ -17,6 +17,7 @@ dependencies {
     implementation project(":modules:member")
 
     implementation project(":modules:member-api")
+    implementation project(":modules:auth-api")
 
 //    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
