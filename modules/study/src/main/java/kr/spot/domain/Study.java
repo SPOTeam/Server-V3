@@ -4,8 +4,11 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import kr.spot.code.status.ErrorStatus;
+import kr.spot.domain.enums.RecruitingStatus;
 import kr.spot.domain.vo.Fee;
 import kr.spot.exception.GeneralException;
 import lombok.AccessLevel;
@@ -43,11 +46,14 @@ public class Study extends BaseEntity {
     @Column(length = 1000)
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    private RecruitingStatus recruitingStatus;
+
     public static Study of(Long id, Long leaderId, String name, Integer maxMembers, Fee fee, String imageUrl,
                            String description) {
         validateStudyNameIsNotBlank(name);
         validateMaxMembers(maxMembers);
-        return new Study(id, leaderId, name, maxMembers, fee, imageUrl, description);
+        return new Study(id, leaderId, name, maxMembers, fee, imageUrl, description, RecruitingStatus.RECRUITING);
     }
 
     private static void validateStudyNameIsNotBlank(String name) {
