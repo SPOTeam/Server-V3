@@ -4,6 +4,7 @@ package kr.spot.presentation;
 import io.swagger.v3.oas.annotations.Parameter;
 import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
+import kr.spot.application.command.ManagePostService;
 import kr.spot.code.status.SuccessStatus;
 import kr.spot.presentation.dto.request.ManageCommentRequest;
 import kr.spot.presentation.dto.request.ManagePostRequest;
@@ -22,13 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PostCommandController {
 
+    private final ManagePostService postService;
+
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<Void>> createPost(
+    public ResponseEntity<ApiResponse<Long>> createPost(
             @RequestBody ManagePostRequest request,
             @CurrentMember @Parameter(hidden = true) Long writerId
     ) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._CREATED));
+        return ResponseEntity.ok(
+                ApiResponse.onSuccess(SuccessStatus._CREATED, postService.createPost(request, writerId)));
     }
 
     @PutMapping("/{postId}")
@@ -36,6 +40,7 @@ public class PostCommandController {
             @PathVariable Long postId,
             @RequestBody ManagePostRequest request,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
+        postService.updatePost(postId, request, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._CREATED));
     }
 
@@ -43,6 +48,7 @@ public class PostCommandController {
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable Long postId,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
+        postService.deletePost(postId, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._CREATED));
     }
 
