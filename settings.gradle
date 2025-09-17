@@ -10,6 +10,7 @@ include 'modules:shared'
 include 'modules:member'
 include 'modules:auth'
 include 'modules:study'
+include 'modules:post'
 
 include 'modules:member-api'
 include 'modules:auth-api'
