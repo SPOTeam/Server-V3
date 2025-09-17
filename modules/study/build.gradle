@@ -1,0 +1,25 @@
+plugins {
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
+    id "java"
+}
+
+dependencies {
+    // Project Dependencies
+    implementation project(":common:api")
+    implementation project(":common:snowflake")
+
+    implementation project(":modules:shared")
+    implementation project(":modules:auth-api")
+
+    // Spring Boot Starters
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+
+    // Testing
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+}

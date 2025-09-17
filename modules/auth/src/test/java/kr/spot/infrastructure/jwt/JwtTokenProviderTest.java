@@ -23,7 +23,6 @@ class JwtTokenProviderTest {
     void create_and_validate_and_extract_memberId() {
         // given
         JwtTokenProvider provider = new JwtTokenProvider(SECRET, ACCESS_MS, REFRESH_MS);
-        provider.init();
 
         // when
         TokenDTO token = provider.createToken(MEMBER_ID);
@@ -41,7 +40,6 @@ class JwtTokenProviderTest {
     void expired_token_throws_expired_exception() {
         // given: 만료 시간을 음수로 줘서 즉시 만료
         JwtTokenProvider provider = new JwtTokenProvider(SECRET, -1L, -1L);
-        provider.init();
 
         String expiredAccess = provider.createToken(MEMBER_ID).accessToken();
 
@@ -54,11 +52,9 @@ class JwtTokenProviderTest {
     @DisplayName("서명이 다른 토큰은 INVALID_JWT 예외")
     void invalid_signature_throws_invalid_exception() {
         JwtTokenProvider legit = new JwtTokenProvider(SECRET, ACCESS_MS, REFRESH_MS);
-        legit.init();
         String token = legit.createToken(MEMBER_ID).accessToken();
 
         JwtTokenProvider other = new JwtTokenProvider(OTHER_SECRET, ACCESS_MS, REFRESH_MS);
-        other.init();
 
         assertThatThrownBy(() -> other.validateToken(token))
                 .isInstanceOf(GeneralException.class);
@@ -68,7 +64,6 @@ class JwtTokenProviderTest {
     @DisplayName("빈 문자열 토큰은 EMPTY_JWT 예외")
     void empty_token_throws_empty_exception() {
         JwtTokenProvider provider = new JwtTokenProvider(SECRET, ACCESS_MS, REFRESH_MS);
-        provider.init();
 
         assertThatThrownBy(() -> provider.validateToken(""))
                 .isInstanceOf(GeneralException.class);

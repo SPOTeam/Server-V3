@@ -1,6 +1,6 @@
 package kr.spot.application.oauth.dto;
 
-import kr.spot.base.enums.LoginType;
+import kr.spot.domain.enums.LoginType;
 
 public record OAuthProfile(LoginType loginType, String email, String nickname, String profileImageUrl) {
 

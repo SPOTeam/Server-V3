@@ -1,4 +1,4 @@
-package kr.spot.base.enums;
+package kr.spot.domain.enums;
 
 public enum LoginType {
     KAKAO,

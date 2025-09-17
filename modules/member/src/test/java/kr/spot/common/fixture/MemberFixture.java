@@ -1,8 +1,8 @@
 package kr.spot.common.fixture;
 
 
-import kr.spot.base.enums.LoginType;
 import kr.spot.domain.Member;
+import kr.spot.domain.enums.LoginType;
 import kr.spot.domain.vo.Email;
 
 public class MemberFixture {

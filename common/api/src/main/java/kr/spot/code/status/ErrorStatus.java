@@ -20,14 +20,19 @@ public enum ErrorStatus implements BaseErrorCode {
     _INVALID_JWT(400, "COMMON4006", "유효하지 않은 JWT token입니다."),
     _EXPIRED_JWT(400, "COMMON4007", "만료된 JWT token입니다."),
     _UNSUPPORTED_JWT(400, "COMMON4008", "지원되지 않는 JWT token입니다."),
-
+    _NO_AUTHORIZED(401, "COMMON4009", "권한이 없습니다."),
 
     // 회원 관련
+    _MEMBER_NOT_FOUND(404, "MEMBER404", "회원을 찾을 수 없습니다."),
     _INVALID_EMAIL_FORMAT(400, "MEMBER4000", "유효하지 않은 이메일 형식입니다."),
     _NAME_CAN_NOT_NULL_OR_EMPTY(400, "MEMBER4001", "이름은 null 또는 공백일 수 없습니다."),
     _EMAIL_CAN_NOT_NULL_OR_EMPTY(400, "MEMBER4002", "이메일은 null 또는 공백일 수 없습니다."),
     _MEMBER_UNSUPPORTED_LOGIN_TYPE(400, "MEMBER4003", "지원하지 않는 로그인 타입입니다."),
     _MEMBER_EMAIL_EXIST(400, "MEMBER4004", "이미 해당 방식으로 가입 내역이 존재하는 이메일입니다."),
+
+    // 스터디 관련
+    _MAX_MEMBERS_MUST_BE_POSITIVE(400, "STUDY4000", "최대 인원 수는 양수여야 합니다."),
+    _INVALID_FEE_AMOUNT(400, "STUDY4000", "유효하지 않은 스터디 비용입니다."),
     ;
 
     private final int httpStatus;

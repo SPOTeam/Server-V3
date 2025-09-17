@@ -3,7 +3,7 @@ package kr.spot.application.oauth.strategy.impl;
 
 import kr.spot.application.oauth.dto.OAuthProfile;
 import kr.spot.application.oauth.strategy.OAuthStrategy;
-import kr.spot.base.enums.LoginType;
+import kr.spot.domain.enums.LoginType;
 import kr.spot.infrastructure.oauth.KaKaoOauth;
 import kr.spot.infrastructure.oauth.client.dto.oauth.kakao.KaKaoOAuthTokenDTO;
 import kr.spot.infrastructure.oauth.client.dto.oauth.kakao.KaKaoUser;

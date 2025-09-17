@@ -1,11 +1,11 @@
-package kr.spot.base;
+package kr.spot.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
-import kr.spot.base.enums.Status;
+import kr.spot.domain.enums.Status;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

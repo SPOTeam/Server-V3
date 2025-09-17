@@ -1,17 +1,14 @@
 package kr.spot.application.ports;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import kr.spot.base.enums.LoginType;
-import kr.spot.code.status.ErrorStatus;
+import kr.spot.IdGenerator;
 import kr.spot.common.fixture.MemberFixture;
 import kr.spot.domain.Member;
-import kr.spot.exception.GeneralException;
+import kr.spot.domain.enums.LoginType;
 import kr.spot.infrastructure.jpa.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +23,8 @@ class EnsureMemberFromOAuthServiceTest {
 
     @Mock
     MemberRepository memberRepository;
+    @Mock
+    IdGenerator idGenerator;
 
     @InjectMocks
     EnsureMemberFromOAuthService service;
@@ -60,23 +59,4 @@ class EnsureMemberFromOAuthServiceTest {
         assertThat(returnedId).isEqualTo(saved.getId());
     }
 
-    @Test
-    @DisplayName("이미 같은 이메일+로그인타입이 존재하면 예외를 던진다")
-    void ensure_throws_when_exists() {
-        // given
-        when(memberRepository.existsByEmailAndLoginType(MemberFixture.email(), LoginType.KAKAO))
-                .thenReturn(true);
-
-        // when & then
-        assertThatThrownBy(() ->
-                service.ensure(LoginType.KAKAO.name(),
-                        MemberFixture.EMAIL,
-                        MemberFixture.NAME,
-                        MemberFixture.PROFILE_IMAGE)
-        )
-                .isInstanceOf(GeneralException.class)
-                .hasMessageContaining(ErrorStatus._MEMBER_EMAIL_EXIST.getCode());
-
-        verify(memberRepository, never()).save(any());
-    }
 }

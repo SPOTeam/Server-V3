@@ -1,0 +1,14 @@
+package kr.spot.domain.enums;
+
+public enum Category {
+    LANGUAGE,            // 어학
+    CERTIFICATION,       // 자격증
+    CAREER,              // 취업
+    CURRENT_AFFAIRS,     // 시사뉴스
+    SELF_STUDY,          // 자율학습
+    DEBATE,              // 토론
+    PROJECT,             // 프로젝트
+    COMPETITION,         // 공모전
+    MAJOR_CAREER,        // 전공및진로학습
+    OTHER                // 기타
+}
