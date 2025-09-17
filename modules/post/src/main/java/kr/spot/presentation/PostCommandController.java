@@ -47,7 +47,7 @@ public class PostCommandController {
         postService.updatePost(postId, request, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
-    
+
     @Operation(summary = "게시글 삭제", description = "기존 게시글을 삭제합니다.")
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
@@ -57,4 +57,21 @@ public class PostCommandController {
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 
+    @Operation(summary = "게시글 좋아요", description = "특정 게시글에 좋아요를 추가합니다.")
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<ApiResponse<Void>> likePost(
+            @PathVariable Long postId,
+            @CurrentMember @Parameter(hidden = true) Long writerId) {
+        postService.likePost(postId, writerId);
+        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
+    }
+
+    @Operation(summary = "게시글 좋아요", description = "특정 게시글에 좋아요를 추가합니다.")
+    @DeleteMapping("/{postId}/unlike")
+    public ResponseEntity<ApiResponse<Void>> unlikePost(
+            @PathVariable Long postId,
+            @CurrentMember @Parameter(hidden = true) Long writerId) {
+        postService.unlikePost(postId, writerId);
+        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
+    }
 }
