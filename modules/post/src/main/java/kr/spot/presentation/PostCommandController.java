@@ -8,7 +8,6 @@ import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
 import kr.spot.application.command.ManagePostService;
 import kr.spot.code.status.SuccessStatus;
-import kr.spot.presentation.dto.request.ManageCommentRequest;
 import kr.spot.presentation.dto.request.ManagePostRequest;
 import kr.spot.presentation.dto.response.CreatePostResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "게시글")
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
@@ -28,7 +28,6 @@ public class PostCommandController {
 
     private final ManagePostService postService;
 
-    @Tag(name = "게시글")
     @Operation(summary = "게시글 작성", description = "새로운 게시글을 작성합니다.")
     @PostMapping
     public ResponseEntity<ApiResponse<CreatePostResponse>> createPost(
@@ -39,7 +38,6 @@ public class PostCommandController {
                 ApiResponse.onSuccess(SuccessStatus._CREATED, postService.createPost(request, writerId)));
     }
 
-    @Tag(name = "게시글")
     @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다.")
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
@@ -49,8 +47,7 @@ public class PostCommandController {
         postService.updatePost(postId, request, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
-
-    @Tag(name = "게시글")
+    
     @Operation(summary = "게시글 삭제", description = "기존 게시글을 삭제합니다.")
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
@@ -60,27 +57,4 @@ public class PostCommandController {
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 
-    @PostMapping("/{postId}/comments")
-    public ResponseEntity<ApiResponse<Void>> createComment(
-            @PathVariable Long postId,
-            @RequestBody ManageCommentRequest request,
-            @CurrentMember @Parameter(hidden = true) Long writerId) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._CREATED));
-    }
-
-    @PutMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<Void>> updateComment(
-            @PathVariable Long commentId,
-            @RequestBody ManageCommentRequest request,
-            @CurrentMember @Parameter(hidden = true) Long writerId) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._CREATED));
-    }
-
-    @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<Void>> deleteComment(
-            @PathVariable Long commentId,
-            @CurrentMember @Parameter(hidden = true) Long writerId
-    ) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._CREATED));
-    }
 }
