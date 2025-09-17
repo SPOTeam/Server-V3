@@ -10,6 +10,7 @@ dependencies {
     implementation project(":common:snowflake")
 
     implementation project(":modules:shared")
+    implementation project(":modules:auth-api")
 
     // Spring Boot Starters
     implementation "org.springframework.boot:spring-boot-starter-web"
