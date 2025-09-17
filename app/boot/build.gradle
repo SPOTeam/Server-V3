@@ -15,6 +15,7 @@ dependencies {
     implementation project(":modules:auth")
     implementation project(":modules:study")
     implementation project(":modules:member")
+    implementation project(":modules:post")
 
     implementation project(":modules:member-api")
     implementation project(":modules:auth-api")

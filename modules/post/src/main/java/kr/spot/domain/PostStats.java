@@ -15,8 +15,8 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("status = 'ACTIVE'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PostStats {
-
+public class PostStats extends BaseEntity {
+    
     @Id
     private Long postId;
 

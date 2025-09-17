@@ -9,6 +9,7 @@ import kr.spot.infrastructure.PostStatsRepository;
 import kr.spot.ports.GetWriterInfoPort;
 import kr.spot.ports.dto.WriterInfoResponse;
 import kr.spot.presentation.dto.request.ManagePostRequest;
+import kr.spot.presentation.dto.response.CreatePostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +25,11 @@ public class ManagePostService {
     private final PostRepository postRepository;
     private final PostStatsRepository postStatsRepository;
 
-    public long createPost(ManagePostRequest request, Long writerId) {
+    public CreatePostResponse createPost(ManagePostRequest request, Long writerId) {
         WriterInfo writerInfo = getWriterInfo(writerId);
         Post post = createAndSavePost(request, writerInfo);
         initializeAndSavePostStats(post);
-        return post.getId();
+        return CreatePostResponse.from(post.getId());
     }
 
     public void updatePost(Long postId, ManagePostRequest request, Long writerId) {
