@@ -39,13 +39,22 @@ public class ManagePostService {
     }
 
     public void updatePost(Long postId, ManagePostRequest request, Long writerId) {
-        Post post = getPostWithLock(postId);
-        post.update(request.title(), request.content(), request.postType(), writerId);
+        int updated = postRepository.updatePost(postId, request.title(), request.content(), request.postType(),
+                writerId);
+        if (updated <= 0) {
+            throw new GeneralException(ErrorStatus._ONLY_AUTHOR_CAN_MODIFY);
+        }
+//        Post post = getPostWithLock(postId);
+//        post.update(request.title(), request.content(), request.postType(), writerId);
     }
 
     public void deletePost(Long postId, Long writerId) {
-        Post post = getPostWithLock(postId);
-        post.delete(writerId);
+        int deleted = postRepository.deletePost(postId, writerId);
+        if (deleted <= 0) {
+            throw new GeneralException(ErrorStatus._ONLY_AUTHOR_CAN_MODIFY);
+        }
+//        Post post = getPostWithLock(postId);
+//        post.delete(writerId);
     }
 
     public void likePost(Long postId, Long memberId) {
@@ -69,10 +78,6 @@ public class ManagePostService {
         } else {
             throw new GeneralException(ErrorStatus._ALREADY_UNLIKED);
         }
-    }
-
-    private Post getPostWithLock(Long postId) {
-        return postRepository.getPostByIdWithLock(postId);
     }
 
     private WriterInfo getWriterInfo(Long writerId) {

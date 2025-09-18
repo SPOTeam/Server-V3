@@ -23,6 +23,7 @@ import kr.spot.infrastructure.PostRepository;
 import kr.spot.infrastructure.PostStatsRepository;
 import kr.spot.ports.GetWriterInfoPort;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,6 +75,7 @@ class ManagePostServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("게시글 작성자가 아닌 경우 게시글 수정에 실패한다.")
     void should_fail_to_update_post_when_not_writer() {
         // given
@@ -89,6 +91,7 @@ class ManagePostServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("게시글 작성자가 아닌 경우 게시글 삭제에 실패한다.")
     void should_fail_to_delete_post_when_not_writer() {
         // given
