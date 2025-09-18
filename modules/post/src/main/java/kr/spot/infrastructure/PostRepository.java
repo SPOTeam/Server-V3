@@ -23,7 +23,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
               update Post p
                  set p.title = :title,
                      p.content = :content,
-                     p.postType = :type,
+                     p.postType = :postType,
                      p.updatedAt = CURRENT_TIMESTAMP
                where p.id = :postId
                  and p.writerInfo.writerId = :writerId
@@ -46,7 +46,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             """)
     int deletePost(@Param("postId") Long postId,
                    @Param("writerId") Long writerId);
-    
+
     default Post getPostByIdWithLock(long id) {
         return findByIdWithLock(id).orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
     }
