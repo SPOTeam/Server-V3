@@ -6,7 +6,6 @@ import kr.spot.domain.Post;
 import kr.spot.domain.PostStats;
 import kr.spot.domain.vo.WriterInfo;
 import kr.spot.exception.GeneralException;
-import kr.spot.infrastructure.PostLikeRepository;
 import kr.spot.infrastructure.PostRepository;
 import kr.spot.infrastructure.PostStatsRepository;
 import kr.spot.ports.GetWriterInfoPort;
@@ -27,7 +26,6 @@ public class ManagePostService {
 
     private final PostRepository postRepository;
     private final PostStatsRepository postStatsRepository;
-    private final PostLikeRepository postLikeRepository;
 
     public CreatePostResponse createPost(ManagePostRequest request, Long writerId) {
         WriterInfo writerInfo = getWriterInfo(writerId);
@@ -51,23 +49,6 @@ public class ManagePostService {
         }
     }
 
-    public void likePost(Long postId, Long memberId) {
-        int inserted = postLikeRepository.savePostLike(idGenerator.nextId(), postId, memberId);
-        increaseLikeCount(postId, inserted);
-    }
-
-    private void increaseLikeCount(Long postId, int inserted) {
-        if (inserted == 1) {
-            postStatsRepository.increaseLike(postId);
-        }
-    }
-
-    public void unlikePost(Long postId, Long memberId) {
-        long deleted = postLikeRepository.hardDelete(postId, memberId);
-        if (deleted > 0) {
-            postStatsRepository.decreaseLike(postId);
-        }
-    }
 
     private WriterInfo getWriterInfo(Long writerId) {
         WriterInfoResponse writerInfoResponse = getWriterInfoPort.get(writerId);

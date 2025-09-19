@@ -48,11 +48,12 @@ class ManagePostServiceTest {
     PostLikeRepository postLikeRepository;
 
     ManagePostService managePostService;
+    LikePostService likePostService;
 
     @BeforeEach
     void setUp() {
-        managePostService = new ManagePostService(idGenerator, getWriterInfoPort, postRepository, postStatsRepository,
-                postLikeRepository);
+        managePostService = new ManagePostService(idGenerator, getWriterInfoPort, postRepository, postStatsRepository);
+        likePostService = new LikePostService(idGenerator, postLikeRepository, postStatsRepository);
     }
 
     @Test
@@ -112,7 +113,7 @@ class ManagePostServiceTest {
                 .thenReturn(0);
 
         // when & then
-        managePostService.likePost(POST_ID, WRITER_ID);
+        likePostService.likePost(POST_ID, WRITER_ID);
     }
 
 
@@ -123,6 +124,6 @@ class ManagePostServiceTest {
         when(postLikeRepository.hardDelete(POST_ID, WRITER_ID)).thenReturn(0);
 
         // when & then
-        managePostService.unlikePost(POST_ID, WRITER_ID);
+        likePostService.unlikePost(POST_ID, WRITER_ID);
     }
 }
