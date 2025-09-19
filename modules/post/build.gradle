@@ -15,7 +15,10 @@ dependencies {
 
     // Spring Boot Starters
     implementation "org.springframework.boot:spring-boot-starter-web"
+
+    // Database and JPA
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
 
     // Testing
     testImplementation "org.springframework.boot:spring-boot-starter-test"

@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
+import kr.spot.application.ports.PostViewCounter;
+import kr.spot.application.ports.ViewAbuseGuard;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.Post;
 import kr.spot.domain.PostStats;
@@ -23,6 +25,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class GetPostServiceTest {
 
     @Mock
+    PostViewCounter postViewCounter;
+
+    @Mock
+    ViewAbuseGuard viewAbuseGuard;
+
+    @Mock
     PostRepository postRepository;
 
     @Mock
@@ -32,7 +40,7 @@ class GetPostServiceTest {
 
     @BeforeEach
     void setUp() {
-        getPostService = new GetPostService(postRepository, postStatsRepository);
+        getPostService = new GetPostService(postViewCounter, viewAbuseGuard, postRepository, postStatsRepository);
     }
 
     @Test
@@ -40,6 +48,7 @@ class GetPostServiceTest {
     void should_get_post_detail_successfully() {
         // given
         long postId = 1L;
+        long viewerId = 2L;
         Post post = post();
         PostStats postStats = postStats();
 
@@ -47,7 +56,7 @@ class GetPostServiceTest {
         when(postStatsRepository.getPostStatsById(postId)).thenReturn(postStats);
 
         // when
-        var response = getPostService.getPostDetail(postId);
+        var response = getPostService.getPostDetail(postId, viewerId);
 
         // then
         assertThat(response).isNotNull();
@@ -66,12 +75,13 @@ class GetPostServiceTest {
     void should_throw_exception_when_post_not_found() {
         // given
         long postId = 999L;
+        long viewerId = 2L;
 
         when(postRepository.getPostById(postId)).thenThrow(
                 new GeneralException(ErrorStatus._POST_NOT_FOUND));
 
         // when & then
-        assertThatThrownBy(() -> getPostService.getPostDetail(postId))
+        assertThatThrownBy(() -> getPostService.getPostDetail(postId, viewerId))
                 .isInstanceOf(GeneralException.class);
     }
 
@@ -80,13 +90,14 @@ class GetPostServiceTest {
     void should_throw_exception_when_post_stats_not_found() {
         // given
         long postId = 999L;
+        long viewerId = 2L;
 
         when(postRepository.getPostById(postId)).thenReturn(post());
         when(postStatsRepository.getPostStatsById(postId)).thenThrow(
                 new GeneralException(ErrorStatus._POST_NOT_FOUND));
 
         // when & then
-        assertThatThrownBy(() -> getPostService.getPostDetail(postId))
+        assertThatThrownBy(() -> getPostService.getPostDetail(postId, viewerId))
                 .isInstanceOf(GeneralException.class);
     }
 }

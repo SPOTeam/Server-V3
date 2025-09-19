@@ -22,4 +22,13 @@ public interface PostStatsRepository extends JpaRepository<PostStats, Long> {
     @Query("update PostStats s set s.likeCount = case when s.likeCount > 0 then s.likeCount - 1 else 0 end where s.postId = :postId")
     int decreaseLike(@Param("postId") long postId);
 
+    @Modifying
+    @Query("""
+                update PostStats ps
+                   set ps.viewCount = ps.viewCount + :delta,
+                       ps.updatedAt = CURRENT_TIMESTAMP
+                 where ps.postId = :postId and ps.status = 'ACTIVE'
+            """)
+    int increaseViewBy(@Param("postId") long postId, @Param("delta") long delta);
+
 }
