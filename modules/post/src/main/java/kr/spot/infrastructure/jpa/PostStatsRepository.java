@@ -1,4 +1,4 @@
-package kr.spot.infrastructure;
+package kr.spot.infrastructure.jpa;
 
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.PostStats;

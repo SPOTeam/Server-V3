@@ -2,8 +2,8 @@ package kr.spot.application.query;
 
 import kr.spot.domain.Post;
 import kr.spot.domain.PostStats;
-import kr.spot.infrastructure.PostRepository;
-import kr.spot.infrastructure.PostStatsRepository;
+import kr.spot.infrastructure.jpa.PostRepository;
+import kr.spot.infrastructure.jpa.PostStatsRepository;
 import kr.spot.presentation.dto.response.GetPostDetailResponse;
 import kr.spot.presentation.dto.response.GetPostDetailResponse.WriterInfoResponse;
 import lombok.RequiredArgsConstructor;

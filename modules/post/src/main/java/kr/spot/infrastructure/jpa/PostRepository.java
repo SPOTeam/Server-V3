@@ -1,4 +1,4 @@
-package kr.spot.infrastructure;
+package kr.spot.infrastructure.jpa;
 
 import jakarta.persistence.LockModeType;
 import java.util.Optional;

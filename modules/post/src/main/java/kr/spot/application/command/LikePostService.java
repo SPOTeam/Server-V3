@@ -1,8 +1,8 @@
 package kr.spot.application.command;
 
 import kr.spot.IdGenerator;
-import kr.spot.infrastructure.PostLikeRepository;
-import kr.spot.infrastructure.PostStatsRepository;
+import kr.spot.infrastructure.jpa.PostLikeRepository;
+import kr.spot.infrastructure.jpa.PostStatsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class LikePostService {
 
     private final IdGenerator idGenerator;
-    
+
     private final PostLikeRepository postLikeRepository;
     private final PostStatsRepository postStatsRepository;
 
