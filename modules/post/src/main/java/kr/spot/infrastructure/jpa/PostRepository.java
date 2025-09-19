@@ -1,4 +1,4 @@
-package kr.spot.infrastructure;
+package kr.spot.infrastructure.jpa;
 
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
@@ -49,6 +49,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     default Post getPostByIdWithLock(long id) {
         return findByIdWithLock(id).orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
+    }
+
+    default Post getPostById(long id) {
+        return findById(id).orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
     }
 
 

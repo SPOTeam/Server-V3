@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
+import kr.spot.application.command.LikePostService;
 import kr.spot.application.command.ManagePostService;
 import kr.spot.code.status.SuccessStatus;
 import kr.spot.presentation.dto.request.ManagePostRequest;
@@ -26,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PostCommandController {
 
-    private final ManagePostService postService;
+    private final ManagePostService managePostService;
+    private final LikePostService likePostService;
 
     @Operation(summary = "게시글 작성", description = "새로운 게시글을 작성합니다.")
     @PostMapping
@@ -35,7 +37,7 @@ public class PostCommandController {
             @CurrentMember @Parameter(hidden = true) Long writerId
     ) {
         return ResponseEntity.ok(
-                ApiResponse.onSuccess(SuccessStatus._CREATED, postService.createPost(request, writerId)));
+                ApiResponse.onSuccess(SuccessStatus._CREATED, managePostService.createPost(request, writerId)));
     }
 
     @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다.")
@@ -44,7 +46,7 @@ public class PostCommandController {
             @PathVariable Long postId,
             @RequestBody ManagePostRequest request,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
-        postService.updatePost(postId, request, writerId);
+        managePostService.updatePost(postId, request, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 
@@ -53,7 +55,7 @@ public class PostCommandController {
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable Long postId,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
-        postService.deletePost(postId, writerId);
+        managePostService.deletePost(postId, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 
@@ -62,7 +64,7 @@ public class PostCommandController {
     public ResponseEntity<ApiResponse<Void>> likePost(
             @PathVariable Long postId,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
-        postService.likePost(postId, writerId);
+        likePostService.likePost(postId, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 
@@ -71,7 +73,7 @@ public class PostCommandController {
     public ResponseEntity<ApiResponse<Void>> unlikePost(
             @PathVariable Long postId,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
-        postService.unlikePost(postId, writerId);
+        likePostService.unlikePost(postId, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 }

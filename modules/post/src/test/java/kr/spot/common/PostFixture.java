@@ -1,5 +1,7 @@
 package kr.spot.common;
 
+import kr.spot.domain.Post;
+import kr.spot.domain.PostStats;
 import kr.spot.domain.enums.PostType;
 import kr.spot.domain.vo.WriterInfo;
 import kr.spot.presentation.dto.request.ManagePostRequest;
@@ -19,6 +21,15 @@ public class PostFixture {
     public static String WRITER_NAME = "작성자";
     public static String WRITER_IMAGE_URL = "https://example.com/image.jpg";
     public static Long OTHER_WRITER_ID = 2L;
+
+
+    public static Post post() {
+        return Post.of(POST_ID, writerInfo(), TITLE, CONTENT, PostType.COUNSELING);
+    }
+
+    public static PostStats postStats() {
+        return PostStats.of(POST_ID);
+    }
 
     public static WriterInfo writerInfo() {
         return WriterInfo.of(WRITER_ID, WRITER_NAME, WRITER_IMAGE_URL);

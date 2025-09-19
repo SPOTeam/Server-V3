@@ -1,4 +1,4 @@
-package kr.spot.infrastructure;
+package kr.spot.infrastructure.jpa;
 
 import kr.spot.domain.association.PostLike;
 import org.springframework.data.jpa.repository.JpaRepository;

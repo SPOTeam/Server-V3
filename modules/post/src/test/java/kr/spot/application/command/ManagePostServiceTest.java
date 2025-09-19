@@ -17,9 +17,9 @@ import kr.spot.domain.Post;
 import kr.spot.domain.enums.PostType;
 import kr.spot.domain.vo.WriterInfo;
 import kr.spot.exception.GeneralException;
-import kr.spot.infrastructure.PostLikeRepository;
-import kr.spot.infrastructure.PostRepository;
-import kr.spot.infrastructure.PostStatsRepository;
+import kr.spot.infrastructure.jpa.PostLikeRepository;
+import kr.spot.infrastructure.jpa.PostRepository;
+import kr.spot.infrastructure.jpa.PostStatsRepository;
 import kr.spot.ports.GetWriterInfoPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -48,11 +48,12 @@ class ManagePostServiceTest {
     PostLikeRepository postLikeRepository;
 
     ManagePostService managePostService;
+    LikePostService likePostService;
 
     @BeforeEach
     void setUp() {
-        managePostService = new ManagePostService(idGenerator, getWriterInfoPort, postRepository, postStatsRepository,
-                postLikeRepository);
+        managePostService = new ManagePostService(idGenerator, getWriterInfoPort, postRepository, postStatsRepository);
+        likePostService = new LikePostService(idGenerator, postLikeRepository, postStatsRepository);
     }
 
     @Test
@@ -112,7 +113,7 @@ class ManagePostServiceTest {
                 .thenReturn(0);
 
         // when & then
-        managePostService.likePost(POST_ID, WRITER_ID);
+        likePostService.likePost(POST_ID, WRITER_ID);
     }
 
 
@@ -123,6 +124,6 @@ class ManagePostServiceTest {
         when(postLikeRepository.hardDelete(POST_ID, WRITER_ID)).thenReturn(0);
 
         // when & then
-        managePostService.unlikePost(POST_ID, WRITER_ID);
+        likePostService.unlikePost(POST_ID, WRITER_ID);
     }
 }
