@@ -120,7 +120,7 @@ class ManagePostServiceTest {
     @DisplayName("좋아요를 누르지 않은 게시글에 대해 좋아요 취소를 할 경우 정상적으로 처리된다.")
     void should_process_successfully_when_unliking_not_liked_post() {
         // given
-        when(postLikeRepository.deleteByPostIdAndMemberId(POST_ID, WRITER_ID)).thenReturn(0L);
+        when(postLikeRepository.hardDelete(POST_ID, WRITER_ID)).thenReturn(0);
 
         // when & then
         managePostService.unlikePost(POST_ID, WRITER_ID);

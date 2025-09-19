@@ -66,7 +66,7 @@ public class PostCommandController {
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 
-    @Operation(summary = "게시글 좋아요", description = "특정 게시글에 좋아요를 추가합니다.")
+    @Operation(summary = "게시글 좋아요 취소", description = "특정 게시글에 좋아요를 취소합니다.")
     @DeleteMapping("/{postId}/unlike")
     public ResponseEntity<ApiResponse<Void>> unlikePost(
             @PathVariable Long postId,

@@ -63,7 +63,7 @@ public class ManagePostService {
     }
 
     public void unlikePost(Long postId, Long memberId) {
-        long deleted = postLikeRepository.deleteByPostIdAndMemberId(postId, memberId);
+        long deleted = postLikeRepository.hardDelete(postId, memberId);
         if (deleted > 0) {
             postStatsRepository.decreaseLike(postId);
         }

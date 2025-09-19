@@ -18,5 +18,12 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
                      @Param("postId") long postId,
                      @Param("memberId") long memberId);
 
-    long deleteByPostIdAndMemberId(Long postId, Long memberId);
+    @Modifying
+    @Query(value = """
+            DELETE FROM post_like
+             WHERE post_id = :postId
+               AND member_id = :memberId
+            """, nativeQuery = true)
+    int hardDelete(@Param("postId") Long postId,
+                   @Param("memberId") Long memberId);
 }
