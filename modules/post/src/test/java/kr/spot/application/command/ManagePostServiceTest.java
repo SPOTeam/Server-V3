@@ -8,13 +8,12 @@ import static kr.spot.common.PostFixture.WRITER_ID;
 import static kr.spot.common.PostFixture.writerInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import kr.spot.IdGenerator;
 import kr.spot.common.PostFixture;
 import kr.spot.domain.Post;
-import kr.spot.domain.association.PostLike;
 import kr.spot.domain.enums.PostType;
 import kr.spot.domain.vo.WriterInfo;
 import kr.spot.exception.GeneralException;
@@ -29,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 
 @ExtendWith(MockitoExtension.class)
 class ManagePostServiceTest {
@@ -107,27 +105,24 @@ class ManagePostServiceTest {
     }
 
     @Test
-    @DisplayName("이미 좋아요를 누른 게시글에 대해 다시 좋아요를 누를 경우 예외가 발생한다.")
-    void should_throw_exception_when_liking_already_liked_post() {
+    @DisplayName("이미 좋아요를 누른 게시글에 대해 다시 좋아요를 누를 경우 정상적으로 처리된다.")
+    void should_process_successfully_when_liking_already_liked_post() {
         // given
-        when(postLikeRepository.save(any(PostLike.class)))
-                .thenThrow(new DataIntegrityViolationException("duplicate"));
+        when(postLikeRepository.savePostLike(anyLong(), anyLong(), anyLong()))
+                .thenReturn(0);
 
         // when & then
-        assertThatThrownBy(() ->
-                managePostService.likePost(POST_ID, WRITER_ID)
-        ).isInstanceOf(GeneralException.class);
+        managePostService.likePost(POST_ID, WRITER_ID);
     }
 
+
     @Test
-    @DisplayName("좋아요를 누르지 않은 게시글에 대해 좋아요 취소를 시도할 경우 예외가 발생한다.")
-    void should_throw_exception_when_unliking_not_liked_post() {
+    @DisplayName("좋아요를 누르지 않은 게시글에 대해 좋아요 취소를 할 경우 정상적으로 처리된다.")
+    void should_process_successfully_when_unliking_not_liked_post() {
         // given
-        when(postLikeRepository.deleteByPostIdAndMemberId(POST_ID, WRITER_ID)).thenReturn(0L);
+        when(postLikeRepository.hardDelete(POST_ID, WRITER_ID)).thenReturn(0);
 
         // when & then
-        assertThatThrownBy(() ->
-                managePostService.unlikePost(POST_ID, WRITER_ID)
-        ).isInstanceOf(GeneralException.class);
+        managePostService.unlikePost(POST_ID, WRITER_ID);
     }
 }
