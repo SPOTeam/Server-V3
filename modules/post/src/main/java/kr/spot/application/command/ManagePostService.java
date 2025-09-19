@@ -4,7 +4,6 @@ import kr.spot.IdGenerator;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.Post;
 import kr.spot.domain.PostStats;
-import kr.spot.domain.association.PostLike;
 import kr.spot.domain.vo.WriterInfo;
 import kr.spot.exception.GeneralException;
 import kr.spot.infrastructure.PostLikeRepository;
@@ -15,7 +14,6 @@ import kr.spot.ports.dto.WriterInfoResponse;
 import kr.spot.presentation.dto.request.ManagePostRequest;
 import kr.spot.presentation.dto.response.CreatePostResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +42,6 @@ public class ManagePostService {
         if (updated <= 0) {
             throw new GeneralException(ErrorStatus._ONLY_AUTHOR_CAN_MODIFY);
         }
-//        Post post = getPostWithLock(postId);
-//        post.update(request.title(), request.content(), request.postType(), writerId);
     }
 
     public void deletePost(Long postId, Long writerId) {
@@ -53,30 +49,23 @@ public class ManagePostService {
         if (deleted <= 0) {
             throw new GeneralException(ErrorStatus._ONLY_AUTHOR_CAN_MODIFY);
         }
-//        Post post = getPostWithLock(postId);
-//        post.delete(writerId);
     }
 
     public void likePost(Long postId, Long memberId) {
-        try {
-            savePostLikeAndFlush(postId, memberId);
-            postStatsRepository.increaseLike(postId);
-        } catch (DataIntegrityViolationException e) {
-            throw new GeneralException(ErrorStatus._ALREADY_LIKED);
-        }
+        int inserted = postLikeRepository.savePostLike(idGenerator.nextId(), postId, memberId);
+        increaseLikeCount(postId, inserted);
     }
 
-    private void savePostLikeAndFlush(Long postId, Long memberId) {
-        postLikeRepository.save(PostLike.of(idGenerator.nextId(), postId, memberId));
-        postLikeRepository.flush();
+    private void increaseLikeCount(Long postId, int inserted) {
+        if (inserted == 1) {
+            postStatsRepository.increaseLike(postId);
+        }
     }
 
     public void unlikePost(Long postId, Long memberId) {
         long deleted = postLikeRepository.deleteByPostIdAndMemberId(postId, memberId);
         if (deleted > 0) {
             postStatsRepository.decreaseLike(postId);
-        } else {
-            throw new GeneralException(ErrorStatus._ALREADY_UNLIKED);
         }
     }
 
