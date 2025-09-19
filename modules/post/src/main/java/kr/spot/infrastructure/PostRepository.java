@@ -51,5 +51,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         return findByIdWithLock(id).orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
     }
 
+    default Post getPostById(long id) {
+        return findById(id).orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
+    }
+
 
 }
