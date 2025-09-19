@@ -20,12 +20,13 @@ public class GetPostService {
 
     private final PostViewCounter postViewCounter;
     private final ViewAbuseGuard viewAbuseGuard;
+
     private final PostRepository postRepository;
     private final PostStatsRepository postStatsRepository;
 
     public GetPostDetailResponse getPostDetail(Long postId, Long viewerId) {
-        var post = postRepository.getPostById(postId);
-        var postStats = postStatsRepository.getPostStatsById(postId);
+        Post post = postRepository.getPostById(postId);
+        PostStats postStats = postStatsRepository.getPostStatsById(postId);
 
         long displayView = postStats.getViewCount() + getViewDelta(postId, viewerId);
 

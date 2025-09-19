@@ -4,6 +4,7 @@ import static kr.spot.common.PostFixture.post;
 import static kr.spot.common.PostFixture.postStats;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import kr.spot.application.ports.PostViewCounter;
@@ -99,5 +100,64 @@ class GetPostServiceTest {
         // when & then
         assertThatThrownBy(() -> getPostService.getPostDetail(postId, viewerId))
                 .isInstanceOf(GeneralException.class);
+    }
+
+    // ---------------- 추가: 뷰 델타/가드/장애 케이스 ----------------
+
+    @Test
+    @DisplayName("어뷰징 가드 통과 시: incrementAndGetDelta를 호출해 DB viewCount + 델타로 노출")
+    void should_add_delta_when_guard_allows() {
+        long postId = 1L, viewerId = 10L;
+        Post post = post();
+        PostStats stats = postStats(); // 예: DB viewCount = 0L 가정
+        when(postRepository.getPostById(postId)).thenReturn(post);
+        when(postStatsRepository.getPostStatsById(postId)).thenReturn(stats);
+
+        when(viewAbuseGuard.shouldCount(postId, viewerId)).thenReturn(true);
+        when(postViewCounter.incrementAndGetDelta(postId)).thenReturn(5L);
+
+        var res = getPostService.getPostDetail(postId, viewerId);
+
+        verify(viewAbuseGuard).shouldCount(postId, viewerId);
+        verify(postViewCounter).incrementAndGetDelta(postId);
+        assertThat(res.stats().viewCount()).isEqualTo(stats.getViewCount() + 5L);
+    }
+
+    @Test
+    @DisplayName("어뷰징 가드 차단 시: currentDelta만 조회해 DB viewCount + 델타로 노출")
+    void should_use_current_delta_when_guard_blocks() {
+        long postId = 1L, viewerId = 10L;
+        Post post = post();
+        PostStats stats = postStats(); // DB viewCount = 0L 가정
+        when(postRepository.getPostById(postId)).thenReturn(post);
+        when(postStatsRepository.getPostStatsById(postId)).thenReturn(stats);
+
+        when(viewAbuseGuard.shouldCount(postId, viewerId)).thenReturn(false);
+        when(postViewCounter.currentDelta(postId)).thenReturn(7L);
+
+        var res = getPostService.getPostDetail(postId, viewerId);
+
+        verify(viewAbuseGuard).shouldCount(postId, viewerId);
+        verify(postViewCounter).currentDelta(postId);
+        assertThat(res.stats().viewCount()).isEqualTo(stats.getViewCount() + 7L);
+    }
+
+    @Test
+    @DisplayName("레디스 장애 시: 예외를 삼키고 DB viewCount만 노출(가용성 우선)")
+    void should_fallback_to_db_count_when_redis_fails() {
+        long postId = 1L, viewerId = 10L;
+        Post post = post();
+        PostStats stats = postStats(); // DB viewCount 예: 123L
+        when(postRepository.getPostById(postId)).thenReturn(post);
+        when(postStatsRepository.getPostStatsById(postId)).thenReturn(stats);
+
+        when(viewAbuseGuard.shouldCount(postId, viewerId)).thenReturn(true);
+        when(postViewCounter.incrementAndGetDelta(postId)).thenThrow(new RuntimeException("Redis down"));
+
+        var res = getPostService.getPostDetail(postId, viewerId);
+
+        verify(viewAbuseGuard).shouldCount(postId, viewerId);
+        verify(postViewCounter).incrementAndGetDelta(postId);
+        assertThat(res.stats().viewCount()).isEqualTo(stats.getViewCount()); // 델타 미반영
     }
 }
