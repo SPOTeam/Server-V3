@@ -12,7 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
-class RedisPostViewCounterTest {
+class RedisPostViewHistoryCounterTest {
 
     @Mock
     StringRedisTemplate redis;
