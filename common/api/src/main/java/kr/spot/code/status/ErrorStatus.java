@@ -21,6 +21,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _EXPIRED_JWT(400, "COMMON4007", "만료된 JWT token입니다."),
     _UNSUPPORTED_JWT(400, "COMMON4008", "지원되지 않는 JWT token입니다."),
     _NO_AUTHORIZED(401, "COMMON4009", "권한이 없습니다."),
+    _INVALID_REFRESH_TOKEN(400, "COMMON4010", "유효하지 않은 리프레시 토큰입니다."),
 
     // 회원 관련
     _MEMBER_NOT_FOUND(404, "MEMBER404", "회원을 찾을 수 없습니다."),
