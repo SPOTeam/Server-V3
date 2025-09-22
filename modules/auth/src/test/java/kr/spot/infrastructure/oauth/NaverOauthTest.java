@@ -60,8 +60,8 @@ class NaverOauthTest {
                 "authorization_code",
                 "client-id",
                 "client-secret",
-                "https://my.app/callback",
-                code
+                code,
+                "https://my.app/callback"
         )).thenReturn(token);
 
         // when
@@ -73,8 +73,8 @@ class NaverOauthTest {
                 "authorization_code",
                 "client-id",
                 "client-secret",
-                "https://my.app/callback",
-                code
+                code,
+                "https://my.app/callback"
         );
     }
 
