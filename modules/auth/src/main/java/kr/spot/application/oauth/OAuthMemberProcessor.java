@@ -34,6 +34,7 @@ public class OAuthMemberProcessor {
 
     private void saveRefreshToken(long createdMemberId, TokenDTO tokenDTO) {
         RefreshToken refreshToken = RefreshToken.of(snowflake.nextId(), createdMemberId, tokenDTO.refreshToken());
+        refreshTokenRepository.deleteByMemberId(createdMemberId);
         refreshTokenRepository.save(refreshToken);
     }
 }
