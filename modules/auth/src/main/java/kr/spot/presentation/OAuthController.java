@@ -7,7 +7,7 @@ import kr.spot.ApiResponse;
 import kr.spot.application.oauth.OAuthService;
 import kr.spot.code.status.SuccessStatus;
 import kr.spot.domain.enums.LoginType;
-import kr.spot.presentation.dto.TokenDTO;
+import kr.spot.presentation.command.dto.TokenDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "소셜 로그인")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/oauth")
@@ -23,7 +24,6 @@ public class OAuthController {
 
     private final OAuthService oAuthService;
 
-    @Tag(name = "소셜 로그인 API")
     @Operation(summary = "소셜 로그인 리다이렉트 URL 반환",
             description = "소셜 로그인 타입에 따라 리다이렉트 URL을 반환합니다. " +
                     "예: /api/oauth/redirect-url/naver")
@@ -33,7 +33,6 @@ public class OAuthController {
                 oAuthService.redirectURL(LoginType.valueOf(type.toUpperCase()))));
     }
 
-    @Tag(name = "소셜 로그인 API")
     @Operation(summary = "소셜 로그인 콜백 처리",
             description = "소셜 로그인 후 받은 code를 통해 로그인 또는 회원가입을 처리합니다. " +
                     "예: /api/oauth/callback/naver?code=YOUR_CODE")

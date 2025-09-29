@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
 import kr.spot.code.status.SuccessStatus;
-import kr.spot.presentation.dto.request.ManageCommentRequest;
+import kr.spot.presentation.command.dto.request.ManageCommentRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

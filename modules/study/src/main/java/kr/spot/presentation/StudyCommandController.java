@@ -7,7 +7,7 @@ import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
 import kr.spot.application.command.CreateStudyService;
 import kr.spot.code.status.SuccessStatus;
-import kr.spot.presentation.dto.request.CreateStudyRequest;
+import kr.spot.presentation.command.dto.request.CreateStudyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

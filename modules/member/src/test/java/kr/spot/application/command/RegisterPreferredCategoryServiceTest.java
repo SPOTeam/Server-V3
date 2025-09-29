@@ -17,7 +17,7 @@ import kr.spot.domain.PreferredCategory;
 import kr.spot.exception.GeneralException;
 import kr.spot.infrastructure.jpa.PreferredCategoryRepository;
 import kr.spot.ports.CategoryCatalogPort;
-import kr.spot.presentation.dto.request.RegisterPreferredCategoryRequest;
+import kr.spot.presentation.command.dto.request.RegisterPreferredCategoryRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

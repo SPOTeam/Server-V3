@@ -1,7 +1,7 @@
 package kr.spot.common;
 
 import kr.spot.domain.RefreshToken;
-import kr.spot.presentation.dto.TokenDTO;
+import kr.spot.presentation.command.dto.TokenDTO;
 
 public class AuthFixture {
 

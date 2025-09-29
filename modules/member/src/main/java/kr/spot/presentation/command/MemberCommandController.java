@@ -1,4 +1,4 @@
-package kr.spot.presentation;
+package kr.spot.presentation.command;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -7,7 +7,7 @@ import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
 import kr.spot.application.command.RegisterPreferredCategoryService;
 import kr.spot.code.status.SuccessStatus;
-import kr.spot.presentation.dto.request.RegisterPreferredCategoryRequest;
+import kr.spot.presentation.command.dto.request.RegisterPreferredCategoryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +30,6 @@ public class MemberCommandController {
             @CurrentMember @Parameter(hidden = true) Long memberId
     ) {
         registerPreferredCategoryService.process(memberId, request);
-        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._OK));
+        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 }

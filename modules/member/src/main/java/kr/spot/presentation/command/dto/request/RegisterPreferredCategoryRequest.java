@@ -1,4 +1,4 @@
-package kr.spot.presentation.dto.request;
+package kr.spot.presentation.command.dto.request;
 
 import java.util.List;
 

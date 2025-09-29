@@ -1,4 +1,4 @@
-package kr.spot.presentation.dto;
+package kr.spot.presentation.command.dto;
 
 public record TokenDTO(String accessToken, String refreshToken) {
 

@@ -22,7 +22,7 @@ import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.RefreshToken;
 import kr.spot.exception.GeneralException;
 import kr.spot.infrastructure.jpa.RefreshTokenRepository;
-import kr.spot.presentation.dto.TokenDTO;
+import kr.spot.presentation.command.dto.TokenDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

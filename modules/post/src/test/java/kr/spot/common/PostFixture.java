@@ -4,7 +4,7 @@ import kr.spot.domain.Post;
 import kr.spot.domain.PostStats;
 import kr.spot.domain.enums.PostType;
 import kr.spot.domain.vo.WriterInfo;
-import kr.spot.presentation.dto.request.ManagePostRequest;
+import kr.spot.presentation.command.dto.request.ManagePostRequest;
 
 public class PostFixture {
     public static Long POST_ID = 1L;

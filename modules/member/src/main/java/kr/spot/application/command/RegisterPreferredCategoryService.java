@@ -7,7 +7,7 @@ import kr.spot.domain.PreferredCategory;
 import kr.spot.exception.GeneralException;
 import kr.spot.infrastructure.jpa.PreferredCategoryRepository;
 import kr.spot.ports.CategoryCatalogPort;
-import kr.spot.presentation.dto.request.RegisterPreferredCategoryRequest;
+import kr.spot.presentation.command.dto.request.RegisterPreferredCategoryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

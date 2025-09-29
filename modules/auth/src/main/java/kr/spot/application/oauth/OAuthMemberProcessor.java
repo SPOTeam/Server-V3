@@ -6,7 +6,7 @@ import kr.spot.domain.RefreshToken;
 import kr.spot.impl.Snowflake;
 import kr.spot.infrastructure.jpa.RefreshTokenRepository;
 import kr.spot.ports.EnsureMemberFromOAuthPort;
-import kr.spot.presentation.dto.TokenDTO;
+import kr.spot.presentation.command.dto.TokenDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

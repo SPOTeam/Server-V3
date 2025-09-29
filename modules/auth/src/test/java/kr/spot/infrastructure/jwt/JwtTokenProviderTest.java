@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kr.spot.exception.GeneralException;
-import kr.spot.presentation.dto.TokenDTO;
+import kr.spot.presentation.command.dto.TokenDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

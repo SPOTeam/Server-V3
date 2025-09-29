@@ -12,7 +12,7 @@ import java.util.Date;
 import kr.spot.application.token.TokenProvider;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.exception.GeneralException;
-import kr.spot.presentation.dto.TokenDTO;
+import kr.spot.presentation.command.dto.TokenDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
