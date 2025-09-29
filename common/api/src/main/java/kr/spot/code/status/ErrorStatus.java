@@ -30,6 +30,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _EMAIL_CAN_NOT_NULL_OR_EMPTY(400, "MEMBER4002", "이메일은 null 또는 공백일 수 없습니다."),
     _MEMBER_UNSUPPORTED_LOGIN_TYPE(400, "MEMBER4003", "지원하지 않는 로그인 타입입니다."),
     _MEMBER_EMAIL_EXIST(400, "MEMBER4004", "이미 해당 방식으로 가입 내역이 존재하는 이메일입니다."),
+    _FAIL_TO_UPDATE_NAME(400, "MEMBER4005", "이름 변경에 실패했습니다."),
 
     // 스터디 관련
     _MAX_MEMBERS_MUST_BE_POSITIVE(400, "STUDY4000", "최대 인원 수는 양수여야 합니다."),

@@ -46,7 +46,7 @@ class RegisterPreferredCategoryServiceTest {
 
     @Test
     @DisplayName("모든 카테고리가 유효하면 기존 선호를 삭제하고 새로 저장해야 한다")
-    void should_DeletePreviousAndSaveNewPreferredCategories_When_AllCategoriesAreValid() {
+    void should_delete_previous_and_save_new_preferred_categories_when_all_categories_are_valid() {
         // given
         Long memberId = 123L;
         List<String> categories = List.of("ALG", "LANG", "JOB");
@@ -80,7 +80,7 @@ class RegisterPreferredCategoryServiceTest {
 
     @Test
     @DisplayName("유효하지 않은 카테고리가 포함되면 예외가 발생하고 저장하지 않는다")
-    void should_ThrowExceptionAndNotSave_When_InvalidCategoryExists() {
+    void should_throw_exception_and_not_save_when_invalid_category_exists() {
         // given
         Long memberId = 1L;
         List<String> categories = List.of("ALG", "INVALID");
@@ -105,7 +105,7 @@ class RegisterPreferredCategoryServiceTest {
 
     @Test
     @DisplayName("카테고리 목록이 비어있으면 기존 선호만 삭제하고 빈 목록을 저장해야 한다")
-    void should_DeletePreviousAndSaveEmptyList_When_CategoriesEmpty() {
+    void should_delete_previous_and_save_empty_list_when_categories_empty() {
         // given
         Long memberId = 77L;
         RegisterPreferredCategoryRequest request = mock(RegisterPreferredCategoryRequest.class);
