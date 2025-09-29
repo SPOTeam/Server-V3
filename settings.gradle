@@ -14,3 +14,4 @@ include 'modules:post'
 
 include 'modules:member-api'
 include 'modules:auth-api'
+include 'modules:study-api'

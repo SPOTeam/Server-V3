@@ -10,5 +10,16 @@ public enum Category {
     PROJECT,             // 프로젝트
     COMPETITION,         // 공모전
     MAJOR_CAREER,        // 전공및진로학습
-    OTHER                // 기타
+    OTHER;                // 기타
+
+
+    public static boolean contains(String categoryName) {
+        for (Category c : Category.values()) {
+            if (c.name().equals(categoryName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
