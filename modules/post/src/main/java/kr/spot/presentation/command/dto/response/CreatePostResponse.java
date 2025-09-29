@@ -1,4 +1,4 @@
-package kr.spot.presentation.dto.response;
+package kr.spot.presentation.command.dto.response;
 
 public record CreatePostResponse(Long postId) {
 

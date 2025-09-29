@@ -7,7 +7,7 @@ import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
 import kr.spot.application.query.GetPostService;
 import kr.spot.code.status.SuccessStatus;
-import kr.spot.presentation.dto.response.GetPostDetailResponse;
+import kr.spot.presentation.command.dto.response.GetPostDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

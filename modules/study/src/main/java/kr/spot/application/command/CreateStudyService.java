@@ -10,7 +10,7 @@ import kr.spot.infrastructure.jpa.StudyRepository;
 import kr.spot.infrastructure.jpa.associations.StudyCategoryRepository;
 import kr.spot.infrastructure.jpa.associations.StudyRegionRepository;
 import kr.spot.infrastructure.jpa.associations.StudyStyleRepository;
-import kr.spot.presentation.dto.request.CreateStudyRequest;
+import kr.spot.presentation.command.dto.request.CreateStudyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

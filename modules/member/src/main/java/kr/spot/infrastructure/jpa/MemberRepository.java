@@ -7,6 +7,9 @@ import kr.spot.domain.enums.LoginType;
 import kr.spot.domain.vo.Email;
 import kr.spot.exception.GeneralException;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -17,4 +20,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     default Member getMemberById(long id) {
         return findById(id).orElseThrow(() -> new GeneralException(ErrorStatus._MEMBER_NOT_FOUND));
     }
+
+    @Modifying
+    @Query("UPDATE Member m SET m.name = :name WHERE m.id = :id")
+    int updateNameById(@Param("id") Long id, @Param("name") String name);
 }

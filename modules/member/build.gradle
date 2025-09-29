@@ -10,6 +10,8 @@ dependencies {
     implementation project(":common:snowflake")
 
     implementation project(":modules:shared")
+    implementation project(":modules:study-api")
+    implementation project(":modules:auth-api")
     implementation project(":modules:member-api")
 
     // Spring Boot Starters

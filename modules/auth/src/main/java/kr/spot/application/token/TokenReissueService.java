@@ -6,7 +6,7 @@ import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.RefreshToken;
 import kr.spot.exception.GeneralException;
 import kr.spot.infrastructure.jpa.RefreshTokenRepository;
-import kr.spot.presentation.dto.TokenDTO;
+import kr.spot.presentation.command.dto.TokenDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
