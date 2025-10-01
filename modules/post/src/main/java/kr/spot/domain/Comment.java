@@ -16,7 +16,7 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("status = 'ACTIVE'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Comment {
+public class Comment extends BaseEntity {
 
     @Id
     private Long id;

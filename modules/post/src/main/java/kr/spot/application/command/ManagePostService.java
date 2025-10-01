@@ -48,8 +48,7 @@ public class ManagePostService {
             throw new GeneralException(ErrorStatus._ONLY_AUTHOR_CAN_MODIFY);
         }
     }
-
-
+    
     private WriterInfo getWriterInfo(Long writerId) {
         WriterInfoResponse writerInfoResponse = getWriterInfoPort.get(writerId);
         return WriterInfo.of(writerInfoResponse.writerId(), writerInfoResponse.nickname(),

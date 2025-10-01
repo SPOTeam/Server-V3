@@ -1,4 +1,4 @@
-package kr.spot.infrastructure;
+package kr.spot.infrastructure.rdb;
 
 import kr.spot.IdGenerator;
 import kr.spot.application.ports.ViewAbuseGuard;

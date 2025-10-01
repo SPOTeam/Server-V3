@@ -1,4 +1,4 @@
-package kr.spot.presentation.command.dto.response;
+package kr.spot.presentation.query.dto.response;
 
 import java.time.LocalDateTime;
 import kr.spot.domain.enums.PostType;
