@@ -1,6 +1,9 @@
 package kr.spot.domain.vo;
 
 import jakarta.persistence.Embeddable;
+import java.util.Objects;
+import kr.spot.code.status.ErrorStatus;
+import kr.spot.exception.GeneralException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -22,5 +25,11 @@ public class WriterInfo {
 
     public static WriterInfo of(Long writerId, String writerName, String writerProfileImageUrl) {
         return new WriterInfo(writerId, writerName, writerProfileImageUrl);
+    }
+
+    public void validateIsOwnMember(Long currentUserId) {
+        if (!Objects.equals(writerId, currentUserId)) {
+            throw new GeneralException(ErrorStatus._ONLY_AUTHOR_CAN_MODIFY);
+        }
     }
 }

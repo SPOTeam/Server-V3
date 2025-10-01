@@ -6,7 +6,7 @@ import kr.spot.domain.Post;
 import kr.spot.domain.PostStats;
 import kr.spot.infrastructure.jpa.PostRepository;
 import kr.spot.infrastructure.jpa.PostStatsRepository;
-import kr.spot.presentation.command.dto.response.GetPostDetailResponse;
+import kr.spot.presentation.query.dto.response.GetPostDetailResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

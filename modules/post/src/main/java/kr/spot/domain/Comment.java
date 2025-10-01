@@ -16,7 +16,7 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("status = 'ACTIVE'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Comment {
+public class Comment extends BaseEntity {
 
     @Id
     private Long id;
@@ -29,5 +29,15 @@ public class Comment {
 
     public static Comment of(Long id, Long postId, WriterInfo writerInfo, String content) {
         return new Comment(id, postId, writerInfo, content);
+    }
+
+    public void update(Long currentMemberId, String content) {
+        writerInfo.validateIsOwnMember(currentMemberId);
+        this.content = content;
+    }
+
+    public void delete(Long currentMemberId) {
+        writerInfo.validateIsOwnMember(currentMemberId);
+        super.delete();
     }
 }

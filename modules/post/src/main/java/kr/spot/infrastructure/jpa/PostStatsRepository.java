@@ -23,6 +23,14 @@ public interface PostStatsRepository extends JpaRepository<PostStats, Long> {
     int decreaseLike(@Param("postId") long postId);
 
     @Modifying
+    @Query("update PostStats s set s.commentCount = s.commentCount + 1 where s.postId = :postId")
+    int increaseCommentCount(@Param("postId") long postId);
+
+    @Modifying
+    @Query("update PostStats s set s.commentCount = case when s.commentCount > 0 then s.commentCount - 1 else 0 end where s.postId = :postId")
+    int decreaseCommentCount(@Param("postId") long postId);
+
+    @Modifying
     @Query("""
                 update PostStats ps
                    set ps.viewCount = ps.viewCount + :delta,
