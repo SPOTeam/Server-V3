@@ -43,7 +43,8 @@ public class CommentCommandController {
             @PathVariable Long commentId,
             @RequestBody ManageCommentRequest request,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._CREATED));
+        commentService.updateComment(writerId, commentId, request);
+        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 
     @Operation(summary = "댓글 삭제", description = "기존 댓글을 삭제합니다.")
@@ -52,7 +53,8 @@ public class CommentCommandController {
             @PathVariable Long commentId,
             @CurrentMember @Parameter(hidden = true) Long writerId
     ) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._CREATED));
+        commentService.deleteComment(writerId, commentId);
+        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 
 }

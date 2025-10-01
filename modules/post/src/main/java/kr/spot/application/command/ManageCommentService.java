@@ -31,6 +31,17 @@ public class ManageCommentService {
         return CreateCommentResponse.of(save.getId());
     }
 
+    public void updateComment(Long writerId, Long commentId, ManageCommentRequest request) {
+        Comment comment = commentRepository.getById(commentId);
+        comment.update(writerId, request.content());
+    }
+
+    public void deleteComment(Long writerId, Long commentId) {
+        Comment comment = commentRepository.getById(commentId);
+        comment.delete(writerId);
+        postStatsRepository.decreaseCommentCount(comment.getPostId());
+    }
+
     private WriterInfo getWriterInfo(Long writerId) {
         WriterInfoResponse writerInfoResponse = getWriterInfoPort.get(writerId);
         return WriterInfo.of(writerInfoResponse.writerId(), writerInfoResponse.nickname(),
