@@ -1,5 +1,6 @@
 package kr.spot.application.query;
 
+import static kr.spot.common.CommentFixture.comments;
 import static kr.spot.common.PostFixture.post;
 import static kr.spot.common.PostFixture.postStats;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,6 +14,7 @@ import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.Post;
 import kr.spot.domain.PostStats;
 import kr.spot.exception.GeneralException;
+import kr.spot.infrastructure.jpa.CommentRepository;
 import kr.spot.infrastructure.jpa.PostRepository;
 import kr.spot.infrastructure.jpa.PostStatsRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,13 +37,17 @@ class GetPostServiceTest {
     PostRepository postRepository;
 
     @Mock
+    CommentRepository commentRepository;
+
+    @Mock
     PostStatsRepository postStatsRepository;
 
     GetPostService getPostService;
 
     @BeforeEach
     void setUp() {
-        getPostService = new GetPostService(postViewCounter, viewAbuseGuard, postRepository, postStatsRepository);
+        getPostService = new GetPostService(postViewCounter, viewAbuseGuard, postRepository, commentRepository,
+                postStatsRepository);
     }
 
     @Test
@@ -100,6 +106,53 @@ class GetPostServiceTest {
         // when & then
         assertThatThrownBy(() -> getPostService.getPostDetail(postId, viewerId))
                 .isInstanceOf(GeneralException.class);
+    }
+
+    @Test
+    @DisplayName("댓글이 있는 경우에는 댓글도 함께 조회된다.")
+    void should_get_post_with_comments() {
+        // given
+        long postId = 1L;
+        long viewerId = 2L;
+        Post post = post();
+        PostStats postStats = postStats();
+
+        when(postRepository.getPostById(postId)).thenReturn(post);
+        when(postStatsRepository.getPostStatsById(postId)).thenReturn(postStats);
+        when(commentRepository.getCommentsByPostId(postId)).thenReturn(comments());
+
+        // when
+        var response = getPostService.getPostDetail(postId, viewerId);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.commentCount()).isEqualTo(3);
+        assertThat(response.comments()).isNotNull();
+        assertThat(response.comments().size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("댓글이 없는 경우에도 정상적으로 조회된다.")
+    void should_get_post_without_comments() {
+        // given
+        long postId = 1L;
+        long viewerId = 2L;
+        Post post = post();
+        PostStats postStats = postStats();
+
+        when(postRepository.getPostById(postId)).thenReturn(post);
+        when(postStatsRepository.getPostStatsById(postId)).thenReturn(postStats);
+        when(commentRepository.getCommentsByPostId(postId)).thenReturn(
+                java.util.Collections.emptyList());
+
+        // when
+        var response = getPostService.getPostDetail(postId, viewerId);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.commentCount()).isEqualTo(0);
+        assertThat(response.comments()).isNotNull();
+        assertThat(response.comments().size()).isEqualTo(0);
     }
 
     // ---------------- 추가: 뷰 델타/가드/장애 케이스 ----------------
