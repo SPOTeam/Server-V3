@@ -27,6 +27,10 @@ public class PostFixture {
         return Post.of(POST_ID, writerInfo(), TITLE, CONTENT, PostType.COUNSELING);
     }
 
+    public static Post post(Long postId) {
+        return Post.of(postId, writerInfo(), TITLE, CONTENT, PostType.COUNSELING);
+    }
+
     public static PostStats postStats() {
         return PostStats.of(POST_ID);
     }

@@ -18,16 +18,6 @@ public record GetPostDetailResponse(
         Integer commentCount
 ) {
 
-    public record GetPostStatsResponse(
-            Long likeCount,
-            Long viewCount,
-            Long commentCount
-    ) {
-        public static GetPostStatsResponse from(Long likeCount, Long viewCount, Long commentCount) {
-            return new GetPostStatsResponse(likeCount, viewCount, commentCount);
-        }
-    }
-
     public record CommentResponse(
             Long commentId,
             String content,
