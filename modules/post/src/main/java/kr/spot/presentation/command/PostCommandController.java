@@ -43,7 +43,7 @@ public class PostCommandController {
     @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다.")
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @RequestBody ManagePostRequest request,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
         managePostService.updatePost(postId, request, writerId);
@@ -53,7 +53,7 @@ public class PostCommandController {
     @Operation(summary = "게시글 삭제", description = "기존 게시글을 삭제합니다.")
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
         managePostService.deletePost(postId, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
@@ -62,7 +62,7 @@ public class PostCommandController {
     @Operation(summary = "게시글 좋아요", description = "특정 게시글에 좋아요를 추가합니다.")
     @PostMapping("/{postId}/like")
     public ResponseEntity<ApiResponse<Void>> likePost(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
         likePostService.likePost(postId, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
@@ -71,7 +71,7 @@ public class PostCommandController {
     @Operation(summary = "게시글 좋아요 취소", description = "특정 게시글에 좋아요를 취소합니다.")
     @DeleteMapping("/{postId}/unlike")
     public ResponseEntity<ApiResponse<Void>> unlikePost(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
         likePostService.unlikePost(postId, writerId);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));

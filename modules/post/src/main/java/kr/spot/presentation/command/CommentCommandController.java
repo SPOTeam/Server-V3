@@ -31,7 +31,7 @@ public class CommentCommandController {
     @PostMapping("/{postId}/comments")
     public ResponseEntity<ApiResponse<CreateCommentResponse>> createComment(
             @CurrentMember @Parameter(hidden = true) Long writerId,
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @RequestBody ManageCommentRequest request) {
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._CREATED,
                 commentService.createComment(writerId, postId, request)));
@@ -40,7 +40,7 @@ public class CommentCommandController {
     @Operation(summary = "댓글 수정", description = "기존 댓글을 수정합니다.")
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse<Void>> updateComment(
-            @PathVariable Long commentId,
+            @PathVariable("commentId") Long commentId,
             @RequestBody ManageCommentRequest request,
             @CurrentMember @Parameter(hidden = true) Long writerId) {
         commentService.updateComment(writerId, commentId, request);
@@ -50,7 +50,7 @@ public class CommentCommandController {
     @Operation(summary = "댓글 삭제", description = "기존 댓글을 삭제합니다.")
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
-            @PathVariable Long commentId,
+            @PathVariable("commentId") Long commentId,
             @CurrentMember @Parameter(hidden = true) Long writerId
     ) {
         commentService.deleteComment(writerId, commentId);

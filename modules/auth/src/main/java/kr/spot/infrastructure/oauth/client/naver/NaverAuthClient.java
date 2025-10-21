@@ -3,6 +3,8 @@ package kr.spot.infrastructure.oauth.client.naver;
 import static kr.spot.infrastructure.constants.AuthConstants.CLIENT_ID;
 import static kr.spot.infrastructure.constants.AuthConstants.CLIENT_SECRET;
 import static kr.spot.infrastructure.constants.AuthConstants.GRANT_TYPE;
+import static kr.spot.infrastructure.constants.AuthConstants.RESPONSE_TYPE_CODE;
+import static kr.spot.infrastructure.constants.AuthConstants.STATE;
 
 import kr.spot.infrastructure.oauth.client.dto.oauth.naver.NaverOAuthTokenDTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,8 +19,8 @@ public interface NaverAuthClient {
             @RequestParam(GRANT_TYPE) String grantType,
             @RequestParam(CLIENT_ID) String clientId,
             @RequestParam(CLIENT_SECRET) String clientSecret,
-            @RequestParam String code,
-            @RequestParam String state
+            @RequestParam(RESPONSE_TYPE_CODE) String code,
+            @RequestParam(STATE) String state
     );
 
 
