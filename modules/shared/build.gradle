@@ -18,3 +18,11 @@ def querydslDir = "$buildDir/generated/querydsl"
 tasks.withType(JavaCompile) {
     options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
 }
+
+sourceSets {
+    main {
+        java {
+            srcDir querydslDir
+        }
+    }
+}
