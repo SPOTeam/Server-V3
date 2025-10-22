@@ -14,12 +14,12 @@ import kr.spot.infrastructure.jpa.CommentRepository;
 import kr.spot.infrastructure.jpa.PostRepository;
 import kr.spot.infrastructure.jpa.PostStatsRepository;
 import kr.spot.infrastructure.jpa.querydsl.PostQueryRepository;
-import kr.spot.presentation.query.dto.response.GetPostDetailResponse;
-import kr.spot.presentation.query.dto.response.GetPostListResponse;
-import kr.spot.presentation.query.dto.response.GetPostListResponse.PostListResponse;
-import kr.spot.presentation.query.dto.response.GetPostOverviewResponse;
-import kr.spot.presentation.query.dto.response.GetPostOverviewResponse.PostOverviewResponse;
-import kr.spot.presentation.query.dto.response.GetPostStatsResponse;
+import kr.spot.presentation.query.dto.response.PostDetailResponse;
+import kr.spot.presentation.query.dto.response.PostListResponse;
+import kr.spot.presentation.query.dto.response.PostListResponse.PostList;
+import kr.spot.presentation.query.dto.response.PostOverviewResponse;
+import kr.spot.presentation.query.dto.response.PostOverviewResponse.PostOverview;
+import kr.spot.presentation.query.dto.response.PostStatsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,7 @@ public class GetPostService {
      * @param size     요청 페이지 크기
      * @return 게시글 목록 및 페이지네이션 정보
      */
-    public GetPostListResponse getPostList(PostType postType, Long cursor, Long viewerId, Integer size) {
+    public PostListResponse getPostList(PostType postType, Long cursor, Long viewerId, Integer size) {
         final int pageSize = Math.min(size, MAX_PAGE_SIZE);
 
         List<Post> rows = postQueryRepository.findPageByIdDesc(postType, cursor, pageSize + 1);
@@ -68,7 +68,7 @@ public class GetPostService {
         Map<Long, PostStats> stats = postQueryRepository.findStatsByPostIds(ids);
         Set<Long> liked = postQueryRepository.findLikedPostIds(viewerId, ids);
 
-        List<GetPostListResponse.PostListResponse> posts = mapPostsToResponseList(rows, stats, liked);
+        List<PostList> posts = mapPostsToResponseList(rows, stats, liked);
 
         return buildGetPostListResponse(posts, hasNext, nextCursor);
     }
@@ -80,7 +80,7 @@ public class GetPostService {
      * @param viewerId 현재 조회자 ID
      * @return 게시글 상세 정보 (Post, PostStats, Comments 포함)
      */
-    public GetPostDetailResponse getPostDetail(Long postId, Long viewerId) {
+    public PostDetailResponse getPostDetail(Long postId, Long viewerId) {
         Post post = postRepository.getPostById(postId);
         PostStats postStats = postStatsRepository.getPostStatsById(postId);
         List<Comment> comments = commentRepository.getCommentsByPostId(postId);
@@ -97,23 +97,23 @@ public class GetPostService {
      *
      * @return 인기 게시글 3개의 개요 정보
      */
-    public GetPostOverviewResponse getHotPosts() {
+    public PostOverviewResponse getHotPosts() {
         List<Long> top3 = hotPostStore.getTop3();
         if (!top3.isEmpty()) {
             List<Post> posts = postRepository.getPostsByIds(top3);
             Map<Long, PostStats> stats = postQueryRepository.findStatsByPostIds(top3);
 
-            List<PostOverviewResponse> hotPosts = posts.stream()
+            List<PostOverview> hotPosts = posts.stream()
                     .map(p -> mapToPostOverviewResponse(p, stats.get(p.getId())))
                     .toList();
 
-            return GetPostOverviewResponse.of(hotPosts);
+            return PostOverviewResponse.of(hotPosts);
         }
         return null;
     }
 
-    private PostOverviewResponse mapToPostOverviewResponse(Post p, PostStats st) {
-        return PostOverviewResponse.of(
+    private PostOverview mapToPostOverviewResponse(Post p, PostStats st) {
+        return PostOverview.of(
                 p.getId(),
                 p.getTitle(),
                 createContentSummary(p.getContent()),
@@ -126,9 +126,9 @@ public class GetPostService {
     // PRIVATE HELPER METHODS
     // ------------------------------------------------------------------------
 
-    private GetPostListResponse buildGetPostListResponse(List<PostListResponse> posts, boolean hasNext,
-                                                         Long nextCursor) {
-        return GetPostListResponse.builder()
+    private PostListResponse buildGetPostListResponse(List<PostList> posts, boolean hasNext,
+                                                      Long nextCursor) {
+        return PostListResponse.builder()
                 .posts(posts)
                 .hasNext(hasNext)
                 .nextCursor(nextCursor)
@@ -163,33 +163,33 @@ public class GetPostService {
         return rows.stream().map(Post::getId).toList();
     }
 
-    private List<PostListResponse> mapPostsToResponseList(List<Post> rows, Map<Long, PostStats> stats,
-                                                          Set<Long> liked) {
+    private List<PostList> mapPostsToResponseList(List<Post> rows, Map<Long, PostStats> stats,
+                                                  Set<Long> liked) {
         return rows.stream()
                 .map(p -> mapToPostListResponse(p, stats, liked))
                 .toList();
     }
 
-    private GetPostDetailResponse mapToPostDetailResponse(Post post, PostStats postStats, long viewCount,
-                                                          List<Comment> comments) {
-        return GetPostDetailResponse.builder()
+    private PostDetailResponse mapToPostDetailResponse(Post post, PostStats postStats, long viewCount,
+                                                       List<Comment> comments) {
+        return PostDetailResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .postType(post.getPostType())
-                .writer(GetPostDetailResponse.WriterInfoResponse.of(
+                .writer(PostDetailResponse.WriterInfoResponse.of(
                         post.getWriterInfo().getWriterId(),
                         post.getWriterInfo().getWriterName(),
                         post.getWriterInfo().getWriterProfileImageUrl()))
-                .stats(GetPostStatsResponse.from(
+                .stats(PostStatsResponse.from(
                         postStats.getLikeCount(), viewCount, postStats.getCommentCount()))
                 .createdAt(post.getCreatedAt())
                 .comments(
                         comments.stream()
-                                .map(comment -> GetPostDetailResponse.CommentResponse.of(
+                                .map(comment -> PostDetailResponse.CommentResponse.of(
                                         comment.getId(),
                                         comment.getContent(),
-                                        GetPostDetailResponse.WriterInfoResponse.of(
+                                        PostDetailResponse.WriterInfoResponse.of(
                                                 comment.getWriterInfo().getWriterId(),
                                                 comment.getWriterInfo().getWriterName(),
                                                 comment.getWriterInfo().getWriterProfileImageUrl()
@@ -202,17 +202,17 @@ public class GetPostService {
                 .build();
     }
 
-    private PostListResponse mapToPostListResponse(Post p, Map<Long, PostStats> stats, Set<Long> liked) {
+    private PostList mapToPostListResponse(Post p, Map<Long, PostStats> stats, Set<Long> liked) {
         PostStats st = stats.get(p.getId());
         long view = st.getViewCount();
         long like = st.getLikeCount();
         long comment = st.getCommentCount();
 
-        return PostListResponse.of(
+        return PostList.of(
                 p.getId(),
                 p.getTitle(),
                 createContentSummary(p.getContent()), // 요약 메서드 이름 변경 적용
-                new GetPostStatsResponse(like, view, comment),
+                new PostStatsResponse(like, view, comment),
                 p.getCreatedAt(),
                 liked.contains(p.getId())
         );

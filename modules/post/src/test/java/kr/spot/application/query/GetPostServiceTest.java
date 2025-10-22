@@ -30,8 +30,8 @@ import kr.spot.infrastructure.jpa.CommentRepository;
 import kr.spot.infrastructure.jpa.PostRepository;
 import kr.spot.infrastructure.jpa.PostStatsRepository;
 import kr.spot.infrastructure.jpa.querydsl.PostQueryRepository;
-import kr.spot.presentation.query.dto.response.GetPostOverviewResponse;
-import kr.spot.presentation.query.dto.response.GetPostOverviewResponse.PostOverviewResponse;
+import kr.spot.presentation.query.dto.response.PostOverviewResponse;
+import kr.spot.presentation.query.dto.response.PostOverviewResponse.PostOverview;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -337,21 +337,21 @@ class GetPostServiceTest {
                 3L, PostStats.of(3L)
         );
         when(postQueryRepository.findStatsByPostIds(hotPostIds)).thenReturn(stats);
-        
+
         ReflectionTestUtils.setField(stats.get(1L), "likeCount", 10L);
         ReflectionTestUtils.setField(stats.get(2L), "likeCount", 20L);
         ReflectionTestUtils.setField(stats.get(3L), "likeCount", 30L);
 
         // when
-        GetPostOverviewResponse result = getPostService.getHotPosts();
+        PostOverviewResponse result = getPostService.getHotPosts();
 
         // then
         assertThat(result).isNotNull();
-        List<PostOverviewResponse> resultPosts = result.hotPosts();
+        List<PostOverview> resultPosts = result.hotPosts();
         assertThat(resultPosts).hasSize(3);
 
         assertThat(resultPosts)
-                .extracting(PostOverviewResponse::postId)
+                .extracting(PostOverview::postId)
                 .containsExactlyInAnyOrder(1L, 2L, 3L);
 
         // Verify interactions
@@ -367,7 +367,7 @@ class GetPostServiceTest {
         when(hotPostStore.getTop3()).thenReturn(Collections.emptyList());
 
         // when
-        GetPostOverviewResponse result = getPostService.getHotPosts();
+        PostOverviewResponse result = getPostService.getHotPosts();
 
         // then
         assertThat(result).isNull();

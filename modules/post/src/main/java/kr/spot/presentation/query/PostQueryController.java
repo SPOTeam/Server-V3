@@ -10,8 +10,8 @@ import kr.spot.annotations.CurrentMember;
 import kr.spot.application.query.GetPostService;
 import kr.spot.code.status.SuccessStatus;
 import kr.spot.domain.enums.PostType;
-import kr.spot.presentation.query.dto.response.GetPostDetailResponse;
-import kr.spot.presentation.query.dto.response.GetPostListResponse;
+import kr.spot.presentation.query.dto.response.PostDetailResponse;
+import kr.spot.presentation.query.dto.response.PostListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +30,7 @@ public class PostQueryController {
 
     @Operation(summary = "게시글 상세 조회", description = "특정 게시글의 상세 정보를 조회합니다.")
     @GetMapping("{postId}")
-    public ResponseEntity<ApiResponse<GetPostDetailResponse>> getPostDetail(
+    public ResponseEntity<ApiResponse<PostDetailResponse>> getPostDetail(
             @PathVariable Long postId,
             @CurrentMember @Parameter(hidden = true) Long viewerId
     ) {
@@ -42,7 +42,7 @@ public class PostQueryController {
             + "게시글 유형별로 필터링이 가능합니다. 아무 조건을 입력하지 않은 경우, 전체 유형을 대상으로 조회합니다. "
             + "또한 글자 수가 많은 게시글의 경우 일부 내용이 생략되어 제공됩니다. (현재 기준은 100자)")
     @GetMapping
-    public ResponseEntity<ApiResponse<GetPostListResponse>> getPostList(
+    public ResponseEntity<ApiResponse<PostListResponse>> getPostList(
             @CurrentMember @Parameter(hidden = true) Long viewerId,
             @RequestParam(required = false) Long cursor,
             @RequestParam(required = false) PostType postType,
@@ -59,4 +59,6 @@ public class PostQueryController {
         return ResponseEntity.ok(
                 ApiResponse.onSuccess(SuccessStatus._OK, getPostService.getHotPosts()));
     }
+
+
 }
