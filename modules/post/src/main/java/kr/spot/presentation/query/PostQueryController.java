@@ -9,6 +9,7 @@ import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
 import kr.spot.application.query.GetPostService;
 import kr.spot.code.status.SuccessStatus;
+import kr.spot.domain.enums.PostType;
 import kr.spot.presentation.query.dto.response.GetPostDetailResponse;
 import kr.spot.presentation.query.dto.response.GetPostListResponse;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +43,10 @@ public class PostQueryController {
     public ResponseEntity<ApiResponse<GetPostListResponse>> getPostList(
             @CurrentMember @Parameter(hidden = true) Long viewerId,
             @RequestParam(required = false) Long cursor,
+            @RequestParam(required = false) PostType postType,
             @RequestParam(defaultValue = "10") @Min(1) @Max(50) Integer size
     ) {
         return ResponseEntity.ok(
-                ApiResponse.onSuccess(SuccessStatus._OK, getPostService.getPostList(cursor, viewerId, size)));
+                ApiResponse.onSuccess(SuccessStatus._OK, getPostService.getPostList(postType, cursor, viewerId, size)));
     }
 }

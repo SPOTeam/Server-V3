@@ -244,12 +244,12 @@ class GetPostServiceTest {
             statsMap.put(p.getId(), PostStats.of(p.getId()));
         }
 
-        when(postQueryRepository.findPageByIdDesc(null, size + 1)).thenReturn(posts);
+        when(postQueryRepository.findPageByIdDesc(null, null, size + 1)).thenReturn(posts);
         when(postQueryRepository.findStatsByPostIds(any())).thenReturn(statsMap);
         when(postQueryRepository.findLikedPostIds(eq(viewerId), any())).thenReturn(Set.of());
 
         // when
-        var response = getPostService.getPostList(null, viewerId, size);
+        var response = getPostService.getPostList(null, null, viewerId, size);
 
         // then
         assertThat(response.hasNext()).isTrue();
@@ -272,12 +272,12 @@ class GetPostServiceTest {
             statsMap.put(p.getId(), PostStats.of(p.getId()));
         }
 
-        when(postQueryRepository.findPageByIdDesc(null, size + 1)).thenReturn(posts);
+        when(postQueryRepository.findPageByIdDesc(null, null, size + 1)).thenReturn(posts);
         when(postQueryRepository.findStatsByPostIds(any())).thenReturn(statsMap);
         when(postQueryRepository.findLikedPostIds(eq(viewerId), any())).thenReturn(Set.of());
 
         // when
-        var response = getPostService.getPostList(null, viewerId, size);
+        var response = getPostService.getPostList(null, null, viewerId, size);
 
         // then
         assertThat(response.hasNext()).isFalse();
@@ -293,12 +293,12 @@ class GetPostServiceTest {
         int size = 1;
         Post longContentPost = Post.of(1L, PostFixture.writerInfo(), "title", "a".repeat(200), PostType.COUNSELING);
 
-        when(postQueryRepository.findPageByIdDesc(null, size + 1)).thenReturn(List.of(longContentPost));
+        when(postQueryRepository.findPageByIdDesc(null, null, size + 1)).thenReturn(List.of(longContentPost));
         when(postQueryRepository.findStatsByPostIds(any())).thenReturn(Map.of(1L, PostStats.of(1L)));
         when(postQueryRepository.findLikedPostIds(eq(viewerId), any())).thenReturn(Set.of());
 
         // when
-        var response = getPostService.getPostList(null, viewerId, size);
+        var response = getPostService.getPostList(null, null, viewerId, size);
 
         // then
         String summarizedContent = response.posts().get(0).content();
