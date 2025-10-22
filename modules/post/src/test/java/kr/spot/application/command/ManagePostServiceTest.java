@@ -63,14 +63,14 @@ class ManagePostServiceTest {
         WriterInfo writerInfo = writerInfo();
 
         // when
-        Post post = Post.of(POST_ID, writerInfo, TITLE, CONTENT, PostType.ALL);
+        Post post = Post.of(POST_ID, writerInfo, TITLE, CONTENT, PostType.FREE_TALK);
 
         // then
         assertThat(post).isNotNull();
         assertThat(post.getId()).isEqualTo(POST_ID);
         assertThat(post.getTitle()).isEqualTo(TITLE);
         assertThat(post.getContent()).isEqualTo(CONTENT);
-        assertThat(post.getPostType()).isEqualTo(PostType.ALL);
+        assertThat(post.getPostType()).isEqualTo(PostType.FREE_TALK);
     }
 
     @Test
@@ -79,7 +79,7 @@ class ManagePostServiceTest {
     void should_fail_to_update_post_when_not_writer() {
         // given
         WriterInfo writerInfo = writerInfo();
-        Post post = Post.of(POST_ID, writerInfo, TITLE, CONTENT, PostType.ALL);
+        Post post = Post.of(POST_ID, writerInfo, TITLE, CONTENT, PostType.FREE_TALK);
 
         when(postRepository.getPostByIdWithLock(POST_ID)).thenReturn(post);
 
@@ -95,7 +95,7 @@ class ManagePostServiceTest {
     void should_fail_to_delete_post_when_not_writer() {
         // given
         WriterInfo writerInfo = writerInfo();
-        Post post = Post.of(POST_ID, writerInfo, TITLE, CONTENT, PostType.ALL);
+        Post post = Post.of(POST_ID, writerInfo, TITLE, CONTENT, PostType.FREE_TALK);
 
         when(postRepository.getPostByIdWithLock(POST_ID)).thenReturn(post);
 

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
+import kr.spot.application.ports.HotPostStore;
 import kr.spot.application.ports.PostViewCounter;
 import kr.spot.application.ports.ViewAbuseGuard;
 import kr.spot.code.status.ErrorStatus;
@@ -44,6 +45,9 @@ class GetPostServiceTest {
     ViewAbuseGuard viewAbuseGuard;
 
     @Mock
+    HotPostStore hotPostStore;
+
+    @Mock
     PostRepository postRepository;
 
     @Mock
@@ -59,7 +63,8 @@ class GetPostServiceTest {
 
     @BeforeEach
     void setUp() {
-        getPostService = new GetPostService(postViewCounter, viewAbuseGuard, postRepository, postQueryRepository,
+        getPostService = new GetPostService(postViewCounter, viewAbuseGuard, hotPostStore, postRepository,
+                postQueryRepository,
                 commentRepository,
                 postStatsRepository);
     }
