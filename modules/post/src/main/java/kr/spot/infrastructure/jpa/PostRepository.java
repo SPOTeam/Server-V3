@@ -1,6 +1,7 @@
 package kr.spot.infrastructure.jpa;
 
 import jakarta.persistence.LockModeType;
+import java.util.List;
 import java.util.Optional;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.Post;
@@ -46,6 +47,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             """)
     int deletePost(@Param("postId") Long postId,
                    @Param("writerId") Long writerId);
+
+    @Query("select p from Post p where p.id in :postIds and p.status = 'ACTIVE'")
+    List<Post> getPostsByIds(@Param("postIds") List<Long> postIds);
 
     default Post getPostByIdWithLock(long id) {
         return findByIdWithLock(id).orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));

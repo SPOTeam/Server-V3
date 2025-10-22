@@ -3,6 +3,7 @@ package kr.spot.application.query;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import kr.spot.application.ports.HotPostStore;
 import kr.spot.application.ports.PostViewCounter;
 import kr.spot.application.ports.ViewAbuseGuard;
 import kr.spot.domain.Comment;
@@ -16,6 +17,8 @@ import kr.spot.infrastructure.jpa.querydsl.PostQueryRepository;
 import kr.spot.presentation.query.dto.response.GetPostDetailResponse;
 import kr.spot.presentation.query.dto.response.GetPostListResponse;
 import kr.spot.presentation.query.dto.response.GetPostListResponse.PostListResponse;
+import kr.spot.presentation.query.dto.response.GetPostOverviewResponse;
+import kr.spot.presentation.query.dto.response.GetPostOverviewResponse.PostOverviewResponse;
 import kr.spot.presentation.query.dto.response.GetPostStatsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +36,7 @@ public class GetPostService {
 
     private final PostViewCounter postViewCounter;
     private final ViewAbuseGuard viewAbuseGuard;
+    private final HotPostStore hotPostStore;
 
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
@@ -85,6 +89,37 @@ public class GetPostService {
         long displayView = calculateTotalViewCount(viewerId, post, postStats);
 
         return mapToPostDetailResponse(post, postStats, displayView, comments);
+    }
+
+
+    /**
+     * 인기 게시글 상위 3개를 조회합니다.
+     *
+     * @return 인기 게시글 3개의 개요 정보
+     */
+    public GetPostOverviewResponse getHotPosts() {
+        List<Long> top3 = hotPostStore.getTop3();
+        if (!top3.isEmpty()) {
+            List<Post> posts = postRepository.getPostsByIds(top3);
+            Map<Long, PostStats> stats = postQueryRepository.findStatsByPostIds(top3);
+
+            List<PostOverviewResponse> hotPosts = posts.stream()
+                    .map(p -> mapToPostOverviewResponse(p, stats.get(p.getId())))
+                    .toList();
+
+            return GetPostOverviewResponse.of(hotPosts);
+        }
+        return null;
+    }
+
+    private PostOverviewResponse mapToPostOverviewResponse(Post p, PostStats st) {
+        return PostOverviewResponse.of(
+                p.getId(),
+                p.getTitle(),
+                createContentSummary(p.getContent()),
+                st.getCommentCount(),
+                p.getPostType()
+        );
     }
 
     // ------------------------------------------------------------------------

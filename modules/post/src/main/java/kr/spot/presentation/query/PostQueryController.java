@@ -51,4 +51,12 @@ public class PostQueryController {
         return ResponseEntity.ok(
                 ApiResponse.onSuccess(SuccessStatus._OK, getPostService.getPostList(postType, cursor, viewerId, size)));
     }
+
+
+    @Operation(summary = "BEST 인기글 조회", description = "인기 게시글 3개를 조회합니다.")
+    @GetMapping("/hot")
+    public ResponseEntity<ApiResponse<?>> getHotPosts() {
+        return ResponseEntity.ok(
+                ApiResponse.onSuccess(SuccessStatus._OK, getPostService.getHotPosts()));
+    }
 }
