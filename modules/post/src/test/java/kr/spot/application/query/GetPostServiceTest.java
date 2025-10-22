@@ -7,9 +7,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +30,15 @@ import kr.spot.infrastructure.jpa.CommentRepository;
 import kr.spot.infrastructure.jpa.PostRepository;
 import kr.spot.infrastructure.jpa.PostStatsRepository;
 import kr.spot.infrastructure.jpa.querydsl.PostQueryRepository;
+import kr.spot.presentation.query.dto.response.GetPostOverviewResponse;
+import kr.spot.presentation.query.dto.response.GetPostOverviewResponse.PostOverviewResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class GetPostServiceTest {
@@ -309,5 +314,65 @@ class GetPostServiceTest {
         String summarizedContent = response.posts().get(0).content();
         assertThat(summarizedContent).hasSize(GetPostService.MAX_CONTENT_LENGTH + 3);
         assertThat(summarizedContent).endsWith("...");
+    }
+
+
+    @Test
+    @DisplayName("인기 게시글이 존재하면 목록을 반환한다")
+    void will_return_hot_posts() {
+        // given
+        List<Long> hotPostIds = List.of(3L, 1L, 2L);
+        when(hotPostStore.getTop3()).thenReturn(hotPostIds);
+
+        List<Post> posts = List.of(
+                PostFixture.post(1L),
+                PostFixture.post(2L),
+                PostFixture.post(3L)
+        );
+        when(postRepository.getPostsByIds(hotPostIds)).thenReturn(posts);
+
+        Map<Long, PostStats> stats = Map.of(
+                1L, PostStats.of(1L),
+                2L, PostStats.of(2L),
+                3L, PostStats.of(3L)
+        );
+        when(postQueryRepository.findStatsByPostIds(hotPostIds)).thenReturn(stats);
+        
+        ReflectionTestUtils.setField(stats.get(1L), "likeCount", 10L);
+        ReflectionTestUtils.setField(stats.get(2L), "likeCount", 20L);
+        ReflectionTestUtils.setField(stats.get(3L), "likeCount", 30L);
+
+        // when
+        GetPostOverviewResponse result = getPostService.getHotPosts();
+
+        // then
+        assertThat(result).isNotNull();
+        List<PostOverviewResponse> resultPosts = result.hotPosts();
+        assertThat(resultPosts).hasSize(3);
+
+        assertThat(resultPosts)
+                .extracting(PostOverviewResponse::postId)
+                .containsExactlyInAnyOrder(1L, 2L, 3L);
+
+        // Verify interactions
+        verify(hotPostStore).getTop3();
+        verify(postRepository).getPostsByIds(hotPostIds);
+        verify(postQueryRepository).findStatsByPostIds(hotPostIds);
+    }
+
+    @Test
+    @DisplayName("인기 게시글이 없으면 null을 반환한다")
+    void will_return_null_if_no_hot_posts() {
+        // given
+        when(hotPostStore.getTop3()).thenReturn(Collections.emptyList());
+
+        // when
+        GetPostOverviewResponse result = getPostService.getHotPosts();
+
+        // then
+        assertThat(result).isNull();
+        verify(hotPostStore).getTop3();
+        verify(postRepository, never()).getPostsByIds(any());
+        verify(postQueryRepository, never()).findStatsByPostIds(any());
     }
 }
