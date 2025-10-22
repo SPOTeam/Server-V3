@@ -115,8 +115,12 @@ public class GetPostService {
         return null;
     }
 
+    /**
+     * 게시글 유형별 최신 게시글을 조회합니다.
+     *
+     * @return 게시글 유형별 최신 게시글 정보
+     */
     public RecentPostResponse getRecentPosts() {
-        // 1) 타입별 최신 1건을 한 번에 가져옴
         List<Post> latest = postQueryRepository.findLatestOnePerType();
         if (latest.isEmpty()) {
             return RecentPostResponse.of(List.of());
@@ -125,7 +129,6 @@ public class GetPostService {
         List<Long> ids = extractPostIds(latest);
         Map<Long, PostStats> statsMap = postQueryRepository.findStatsByPostIds(ids);
 
-        // 3) 응답 변환
         List<RecentPost> items = getRecentPosts(latest, statsMap);
         return RecentPostResponse.of(items);
     }

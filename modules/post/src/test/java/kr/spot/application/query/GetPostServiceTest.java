@@ -375,4 +375,63 @@ class GetPostServiceTest {
         verify(postRepository, never()).getPostsByIds(any());
         verify(postQueryRepository, never()).findStatsByPostIds(any());
     }
+
+    @Test
+    @DisplayName("게시글 유형별 최신 게시글을 정상적으로 조회한다.")
+    void should_get_recent_posts_successfully() {
+        // given
+        Post counselingPost = PostFixture.post(1L, PostType.COUNSELING);
+        Post freeTalkPost = PostFixture.post(2L, PostType.FREE_TALK);
+        List<Post> latestPosts = List.of(freeTalkPost, counselingPost); // Unordered list
+
+        Map<Long, PostStats> statsMap = Map.of(
+                1L, PostFixture.postStats(1L, 5L),
+                2L, PostFixture.postStats(2L, 10L)
+        );
+
+        when(postQueryRepository.findLatestOnePerType()).thenReturn(latestPosts);
+        when(postQueryRepository.findStatsByPostIds(List.of(2L, 1L))).thenReturn(statsMap);
+
+        // when
+        var response = getPostService.getRecentPosts();
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.recentPosts()).hasSize(2);
+
+        // Check if sorted by PostType ordinal/name
+        assertThat(response.recentPosts())
+                .extracting(p -> p.postType().name())
+                .containsExactly(PostType.COUNSELING.name(), PostType.FREE_TALK.name());
+
+        var counselingResult = response.recentPosts().get(0);
+        assertThat(counselingResult.postId()).isEqualTo(counselingPost.getId());
+        assertThat(counselingResult.title()).isEqualTo(counselingPost.getTitle());
+        assertThat(counselingResult.commentCount()).isEqualTo(5);
+
+        var freeTalkResult = response.recentPosts().get(1);
+        assertThat(freeTalkResult.postId()).isEqualTo(freeTalkPost.getId());
+        assertThat(freeTalkResult.title()).isEqualTo(freeTalkPost.getTitle());
+        assertThat(freeTalkResult.commentCount()).isEqualTo(10);
+
+        verify(postQueryRepository).findLatestOnePerType();
+        verify(postQueryRepository).findStatsByPostIds(any());
+    }
+
+    @Test
+    @DisplayName("최신 게시글이 없으면 빈 목록을 반환한다.")
+    void should_return_empty_list_when_no_recent_posts() {
+        // given
+        when(postQueryRepository.findLatestOnePerType()).thenReturn(Collections.emptyList());
+
+        // when
+        var response = getPostService.getRecentPosts();
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.recentPosts()).isEmpty();
+
+        verify(postQueryRepository).findLatestOnePerType();
+        verify(postQueryRepository, never()).findStatsByPostIds(any());
+    }
 }
