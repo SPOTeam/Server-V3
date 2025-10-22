@@ -30,7 +30,7 @@ public class PostQueryController {
     @Operation(summary = "게시글 상세 조회", description = "특정 게시글의 상세 정보를 조회합니다.")
     @GetMapping("{postId}")
     public ResponseEntity<ApiResponse<GetPostDetailResponse>> getPostDetail(
-            @PathVariable("postId") Long postId,
+            @PathVariable Long postId,
             @CurrentMember @Parameter(hidden = true) Long viewerId
     ) {
         return ResponseEntity.ok(
@@ -41,8 +41,8 @@ public class PostQueryController {
     @GetMapping
     public ResponseEntity<ApiResponse<GetPostListResponse>> getPostList(
             @CurrentMember @Parameter(hidden = true) Long viewerId,
-            @RequestParam(required = false, name = "cursor") Long cursor,
-            @RequestParam(defaultValue = "10", name = "size") @Min(1) @Max(50) Integer size
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(50) Integer size
     ) {
         return ResponseEntity.ok(
                 ApiResponse.onSuccess(SuccessStatus._OK, getPostService.getPostList(cursor, viewerId, size)));
