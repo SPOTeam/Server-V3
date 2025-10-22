@@ -31,6 +31,8 @@ dependencies {
 
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+
+
 }
 
 def querydslDir = "$buildDir/generated/querydsl"
@@ -40,5 +42,9 @@ tasks.withType(JavaCompile) {
 }
 
 sourceSets {
-    main.java.srcDir querydslDir
+    main {
+        java {
+            srcDir querydslDir
+        }
+    }
 }

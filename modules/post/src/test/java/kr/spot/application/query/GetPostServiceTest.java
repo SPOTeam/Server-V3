@@ -7,14 +7,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
+import kr.spot.application.ports.HotPostStore;
 import kr.spot.application.ports.PostViewCounter;
 import kr.spot.application.ports.ViewAbuseGuard;
 import kr.spot.code.status.ErrorStatus;
@@ -27,12 +30,15 @@ import kr.spot.infrastructure.jpa.CommentRepository;
 import kr.spot.infrastructure.jpa.PostRepository;
 import kr.spot.infrastructure.jpa.PostStatsRepository;
 import kr.spot.infrastructure.jpa.querydsl.PostQueryRepository;
+import kr.spot.presentation.query.dto.response.PostOverviewResponse;
+import kr.spot.presentation.query.dto.response.PostOverviewResponse.PostOverview;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class GetPostServiceTest {
@@ -42,6 +48,9 @@ class GetPostServiceTest {
 
     @Mock
     ViewAbuseGuard viewAbuseGuard;
+
+    @Mock
+    HotPostStore hotPostStore;
 
     @Mock
     PostRepository postRepository;
@@ -59,7 +68,8 @@ class GetPostServiceTest {
 
     @BeforeEach
     void setUp() {
-        getPostService = new GetPostService(postViewCounter, viewAbuseGuard, postRepository, postQueryRepository,
+        getPostService = new GetPostService(postViewCounter, viewAbuseGuard, hotPostStore, postRepository,
+                postQueryRepository,
                 commentRepository,
                 postStatsRepository);
     }
@@ -244,12 +254,12 @@ class GetPostServiceTest {
             statsMap.put(p.getId(), PostStats.of(p.getId()));
         }
 
-        when(postQueryRepository.findPageByIdDesc(null, size + 1)).thenReturn(posts);
+        when(postQueryRepository.findPageByIdDesc(null, null, size + 1)).thenReturn(posts);
         when(postQueryRepository.findStatsByPostIds(any())).thenReturn(statsMap);
         when(postQueryRepository.findLikedPostIds(eq(viewerId), any())).thenReturn(Set.of());
 
         // when
-        var response = getPostService.getPostList(null, viewerId, size);
+        var response = getPostService.getPostList(null, null, viewerId, size);
 
         // then
         assertThat(response.hasNext()).isTrue();
@@ -272,12 +282,12 @@ class GetPostServiceTest {
             statsMap.put(p.getId(), PostStats.of(p.getId()));
         }
 
-        when(postQueryRepository.findPageByIdDesc(null, size + 1)).thenReturn(posts);
+        when(postQueryRepository.findPageByIdDesc(null, null, size + 1)).thenReturn(posts);
         when(postQueryRepository.findStatsByPostIds(any())).thenReturn(statsMap);
         when(postQueryRepository.findLikedPostIds(eq(viewerId), any())).thenReturn(Set.of());
 
         // when
-        var response = getPostService.getPostList(null, viewerId, size);
+        var response = getPostService.getPostList(null, null, viewerId, size);
 
         // then
         assertThat(response.hasNext()).isFalse();
@@ -293,16 +303,136 @@ class GetPostServiceTest {
         int size = 1;
         Post longContentPost = Post.of(1L, PostFixture.writerInfo(), "title", "a".repeat(200), PostType.COUNSELING);
 
-        when(postQueryRepository.findPageByIdDesc(null, size + 1)).thenReturn(List.of(longContentPost));
+        when(postQueryRepository.findPageByIdDesc(null, null, size + 1)).thenReturn(List.of(longContentPost));
         when(postQueryRepository.findStatsByPostIds(any())).thenReturn(Map.of(1L, PostStats.of(1L)));
         when(postQueryRepository.findLikedPostIds(eq(viewerId), any())).thenReturn(Set.of());
 
         // when
-        var response = getPostService.getPostList(null, viewerId, size);
+        var response = getPostService.getPostList(null, null, viewerId, size);
 
         // then
         String summarizedContent = response.posts().get(0).content();
         assertThat(summarizedContent).hasSize(GetPostService.MAX_CONTENT_LENGTH + 3);
         assertThat(summarizedContent).endsWith("...");
+    }
+
+
+    @Test
+    @DisplayName("인기 게시글이 존재하면 목록을 반환한다")
+    void will_return_hot_posts() {
+        // given
+        List<Long> hotPostIds = List.of(3L, 1L, 2L);
+        when(hotPostStore.getTop3()).thenReturn(hotPostIds);
+
+        List<Post> posts = List.of(
+                PostFixture.post(1L),
+                PostFixture.post(2L),
+                PostFixture.post(3L)
+        );
+        when(postRepository.getPostsByIds(hotPostIds)).thenReturn(posts);
+
+        Map<Long, PostStats> stats = Map.of(
+                1L, PostStats.of(1L),
+                2L, PostStats.of(2L),
+                3L, PostStats.of(3L)
+        );
+        when(postQueryRepository.findStatsByPostIds(hotPostIds)).thenReturn(stats);
+
+        ReflectionTestUtils.setField(stats.get(1L), "likeCount", 10L);
+        ReflectionTestUtils.setField(stats.get(2L), "likeCount", 20L);
+        ReflectionTestUtils.setField(stats.get(3L), "likeCount", 30L);
+
+        // when
+        PostOverviewResponse result = getPostService.getHotPosts();
+
+        // then
+        assertThat(result).isNotNull();
+        List<PostOverview> resultPosts = result.hotPosts();
+        assertThat(resultPosts).hasSize(3);
+
+        assertThat(resultPosts)
+                .extracting(PostOverview::postId)
+                .containsExactlyInAnyOrder(1L, 2L, 3L);
+
+        // Verify interactions
+        verify(hotPostStore).getTop3();
+        verify(postRepository).getPostsByIds(hotPostIds);
+        verify(postQueryRepository).findStatsByPostIds(hotPostIds);
+    }
+
+    @Test
+    @DisplayName("인기 게시글이 없으면 null을 반환한다")
+    void will_return_null_if_no_hot_posts() {
+        // given
+        when(hotPostStore.getTop3()).thenReturn(Collections.emptyList());
+
+        // when
+        PostOverviewResponse result = getPostService.getHotPosts();
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.hotPosts()).isEmpty();
+        verify(hotPostStore).getTop3();
+        verify(postRepository, never()).getPostsByIds(any());
+        verify(postQueryRepository, never()).findStatsByPostIds(any());
+    }
+
+    @Test
+    @DisplayName("게시글 유형별 최신 게시글을 정상적으로 조회한다.")
+    void should_get_recent_posts_successfully() {
+        // given
+        Post counselingPost = PostFixture.post(1L, PostType.COUNSELING);
+        Post freeTalkPost = PostFixture.post(2L, PostType.FREE_TALK);
+        List<Post> latestPosts = List.of(freeTalkPost, counselingPost); // Unordered list
+
+        Map<Long, PostStats> statsMap = Map.of(
+                1L, PostFixture.postStats(1L, 5L),
+                2L, PostFixture.postStats(2L, 10L)
+        );
+
+        when(postQueryRepository.findLatestOnePerType()).thenReturn(latestPosts);
+        when(postQueryRepository.findStatsByPostIds(List.of(2L, 1L))).thenReturn(statsMap);
+
+        // when
+        var response = getPostService.getRecentPosts();
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.recentPosts()).hasSize(2);
+
+        // Check if sorted by PostType ordinal/name
+        assertThat(response.recentPosts())
+                .extracting(p -> p.postType().name())
+                .containsExactly(PostType.COUNSELING.name(), PostType.FREE_TALK.name());
+
+        var counselingResult = response.recentPosts().get(0);
+        assertThat(counselingResult.postId()).isEqualTo(counselingPost.getId());
+        assertThat(counselingResult.title()).isEqualTo(counselingPost.getTitle());
+        assertThat(counselingResult.commentCount()).isEqualTo(5);
+
+        var freeTalkResult = response.recentPosts().get(1);
+        assertThat(freeTalkResult.postId()).isEqualTo(freeTalkPost.getId());
+        assertThat(freeTalkResult.title()).isEqualTo(freeTalkPost.getTitle());
+        assertThat(freeTalkResult.commentCount()).isEqualTo(10);
+
+        verify(postQueryRepository).findLatestOnePerType();
+        verify(postQueryRepository).findStatsByPostIds(any());
+    }
+
+    @Test
+    @DisplayName("최신 게시글이 없으면 빈 목록을 반환한다.")
+    void should_return_empty_list_when_no_recent_posts() {
+        // given
+        when(postQueryRepository.findLatestOnePerType()).thenReturn(Collections.emptyList());
+
+        // when
+        var response = getPostService.getRecentPosts();
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.recentPosts()).isEmpty();
+
+        verify(postQueryRepository).findLatestOnePerType();
+        verify(postQueryRepository, never()).findStatsByPostIds(any());
     }
 }

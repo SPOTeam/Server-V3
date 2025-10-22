@@ -20,5 +20,9 @@ tasks.withType(JavaCompile) {
 }
 
 sourceSets {
-    main.java.srcDir querydslDir
+    main {
+        java {
+            srcDir querydslDir
+        }
+    }
 }

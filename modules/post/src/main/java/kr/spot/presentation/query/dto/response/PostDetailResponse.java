@@ -6,13 +6,13 @@ import kr.spot.domain.enums.PostType;
 import lombok.Builder;
 
 @Builder
-public record GetPostDetailResponse(
+public record PostDetailResponse(
         Long postId,
         String title,
         String content,
         PostType postType,
         WriterInfoResponse writer,
-        GetPostStatsResponse stats,
+        PostStatsResponse stats,
         LocalDateTime createdAt,
         List<CommentResponse> comments,
         Integer commentCount

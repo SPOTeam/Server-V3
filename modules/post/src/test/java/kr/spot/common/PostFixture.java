@@ -5,6 +5,7 @@ import kr.spot.domain.PostStats;
 import kr.spot.domain.enums.PostType;
 import kr.spot.domain.vo.WriterInfo;
 import kr.spot.presentation.command.dto.request.ManagePostRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class PostFixture {
     public static Long POST_ID = 1L;
@@ -31,8 +32,18 @@ public class PostFixture {
         return Post.of(postId, writerInfo(), TITLE, CONTENT, PostType.COUNSELING);
     }
 
+    public static Post post(Long postId, PostType postType) {
+        return Post.of(postId, writerInfo(), TITLE, CONTENT, postType);
+    }
+
     public static PostStats postStats() {
         return PostStats.of(POST_ID);
+    }
+
+    public static PostStats postStats(Long postId, long count) {
+        PostStats postStats = PostStats.of(postId);
+        ReflectionTestUtils.setField(postStats, "commentCount", count);
+        return postStats;
     }
 
     public static WriterInfo writerInfo() {

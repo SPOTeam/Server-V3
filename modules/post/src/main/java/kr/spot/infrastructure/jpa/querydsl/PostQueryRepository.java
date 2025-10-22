@@ -1,5 +1,7 @@
 package kr.spot.infrastructure.jpa.querydsl;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collection;
 import java.util.HashSet;
@@ -12,7 +14,7 @@ import kr.spot.domain.PostStats;
 import kr.spot.domain.QPost;
 import kr.spot.domain.QPostStats;
 import kr.spot.domain.association.QPostLike;
-import kr.spot.domain.enums.Status;
+import kr.spot.domain.enums.PostType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -22,17 +24,28 @@ public class PostQueryRepository {
 
     private final JPAQueryFactory query;
 
-    public List<Post> findPageByIdDesc(Long cursor, int limit) {
-        QPost p = QPost.post;
-        return query.selectFrom(p)
+    public List<Post> findPageByIdDesc(PostType postType, Long cursor, int limit) {
+        QPost post = QPost.post;
+
+        return query
+                .selectFrom(post)
                 .where(
-                        cursor == null ? null : p.id.lt(cursor),
-                        p.status.eq(Status.ACTIVE)
+                        ltCursor(cursor, post),
+                        eqType(postType, post)
                 )
-                .orderBy(p.id.desc())
+                .orderBy(post.id.desc())
                 .limit(limit)
                 .fetch();
     }
+
+    private BooleanExpression ltCursor(Long cursor, QPost post) {
+        return (cursor == null) ? null : post.id.lt(cursor);
+    }
+
+    private BooleanExpression eqType(PostType postType, QPost post) {
+        return (postType == null) ? null : post.postType.eq(postType);
+    }
+
 
     public Map<Long, PostStats> findStatsByPostIds(Collection<Long> postIds) {
         if (postIds.isEmpty()) {
@@ -62,6 +75,19 @@ public class PostQueryRepository {
                                 like.postId.in(postIds))
                         .fetch()
         );
+    }
+
+    public List<Post> findLatestOnePerType() {
+        QPost p = QPost.post;
+        
+        return query.selectFrom(p)
+                .where(p.id.in(
+                        JPAExpressions
+                                .select(p.id.max())
+                                .from(p)
+                                .groupBy(p.postType)
+                ))
+                .fetch();
     }
 
 }

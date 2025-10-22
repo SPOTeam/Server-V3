@@ -1,5 +1,6 @@
 package kr.spot.infrastructure.jpa;
 
+import java.util.List;
 import kr.spot.code.status.ErrorStatus;
 import kr.spot.domain.PostStats;
 import kr.spot.exception.GeneralException;
@@ -13,6 +14,15 @@ public interface PostStatsRepository extends JpaRepository<PostStats, Long> {
     default PostStats getPostStatsById(long postId) {
         return findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus._POST_NOT_FOUND));
     }
+
+    @Query("""
+            select s.postId
+            from PostStats s
+            where s.status = 'ACTIVE'
+            order by (s.likeCount + s.commentCount + s.viewCount) desc
+            limit 3
+            """)
+    List<Long> findTop3ByTotal();
 
     @Modifying
     @Query("update PostStats s set s.likeCount = s.likeCount + 1 where s.postId = :postId")
