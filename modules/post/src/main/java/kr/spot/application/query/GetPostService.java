@@ -1,5 +1,10 @@
 package kr.spot.application.query;
 
+import static kr.spot.application.query.mapper.PostResponseMapper.toPostDetail;
+import static kr.spot.application.query.mapper.PostResponseMapper.toPostList;
+import static kr.spot.application.query.mapper.PostResponseMapper.toPostOverview;
+import static kr.spot.application.query.mapper.PostResponseMapper.toRecentPost;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +25,6 @@ import kr.spot.presentation.query.dto.response.PostListResponse;
 import kr.spot.presentation.query.dto.response.PostListResponse.PostList;
 import kr.spot.presentation.query.dto.response.PostOverviewResponse;
 import kr.spot.presentation.query.dto.response.PostOverviewResponse.PostOverview;
-import kr.spot.presentation.query.dto.response.PostStatsResponse;
 import kr.spot.presentation.query.dto.response.RecentPostResponse;
 import kr.spot.presentation.query.dto.response.RecentPostResponse.RecentPost;
 import lombok.RequiredArgsConstructor;
@@ -60,20 +64,24 @@ public class GetPostService {
 
         List<Post> rows = postQueryRepository.findPageByIdDesc(postType, cursor, pageSize + 1);
         boolean hasNext = rows.size() > pageSize;
-
         if (hasNext) {
             rows = rows.subList(0, pageSize);
         }
         Long nextCursor = hasNext ? rows.getLast().getId() : null;
 
-        List<Long> ids = extractPostIds(rows);
-
+        List<Long> ids = rows.stream().map(Post::getId).toList();
         Map<Long, PostStats> stats = postQueryRepository.findStatsByPostIds(ids);
         Set<Long> liked = postQueryRepository.findLikedPostIds(viewerId, ids);
 
-        List<PostList> posts = mapPostsToResponseList(rows, stats, liked);
+        List<PostList> posts = rows.stream()
+                .map(p -> toPostList(p, stats.get(p.getId()), liked.contains(p.getId())))
+                .toList();
 
-        return buildGetPostListResponse(posts, hasNext, nextCursor);
+        return PostListResponse.builder()
+                .posts(posts)
+                .hasNext(hasNext)
+                .nextCursor(nextCursor)
+                .build();
     }
 
     /**
@@ -88,10 +96,8 @@ public class GetPostService {
         PostStats postStats = postStatsRepository.getPostStatsById(postId);
         List<Comment> comments = commentRepository.getCommentsByPostId(postId);
 
-        // 실시간 뷰 카운트 계산
-        long displayView = calculateTotalViewCount(viewerId, post, postStats);
-
-        return mapToPostDetailResponse(post, postStats, displayView, comments);
+        long displayView = postStats.getViewCount() + getViewDeltaFromCounter(postId, viewerId);
+        return toPostDetail(post, postStats, displayView, comments);
     }
 
 
@@ -102,17 +108,18 @@ public class GetPostService {
      */
     public PostOverviewResponse getHotPosts() {
         List<Long> top3 = hotPostStore.getTop3();
-        if (!top3.isEmpty()) {
-            List<Post> posts = postRepository.getPostsByIds(top3);
-            Map<Long, PostStats> stats = postQueryRepository.findStatsByPostIds(top3);
-
-            List<PostOverview> hotPosts = posts.stream()
-                    .map(p -> mapToPostOverviewResponse(p, stats.get(p.getId())))
-                    .toList();
-
-            return PostOverviewResponse.of(hotPosts);
+        if (top3.isEmpty()) {
+            return PostOverviewResponse.of(List.of());
         }
-        return null;
+
+        List<Post> posts = postRepository.getPostsByIds(top3);
+        Map<Long, PostStats> stats = postQueryRepository.findStatsByPostIds(top3);
+
+        List<PostOverview> hotPosts = posts.stream()
+                .map(p -> toPostOverview(p, stats.get(p.getId())))
+                .toList();
+
+        return PostOverviewResponse.of(hotPosts);
     }
 
     /**
@@ -126,34 +133,17 @@ public class GetPostService {
             return RecentPostResponse.of(List.of());
         }
 
-        List<Long> ids = extractPostIds(latest);
+        List<Long> ids = latest.stream().map(Post::getId).toList();
         Map<Long, PostStats> statsMap = postQueryRepository.findStatsByPostIds(ids);
 
-        List<RecentPost> items = getRecentPosts(latest, statsMap);
+        List<RecentPost> items = latest.stream()
+                .map(p -> toRecentPost(p, statsMap.get(p.getId())))
+                .sorted(Comparator.comparing(RecentPost::postType))
+                .toList();
+
         return RecentPostResponse.of(items);
     }
 
-    // ------------------------------------------------------------------------
-    // PRIVATE HELPER METHODS
-    // ------------------------------------------------------------------------
-
-    private PostListResponse buildGetPostListResponse(List<PostList> posts, boolean hasNext,
-                                                      Long nextCursor) {
-        return PostListResponse.builder()
-                .posts(posts)
-                .hasNext(hasNext)
-                .nextCursor(nextCursor)
-                .build();
-    }
-
-    private long calculateTotalViewCount(Long viewerId, Post p, PostStats st) {
-        return st.getViewCount() + getViewDeltaFromCounter(p.getId(), viewerId);
-    }
-
-    private String createContentSummary(String content) {
-        content = content.strip();
-        return content.length() > MAX_CONTENT_LENGTH ? content.substring(0, MAX_CONTENT_LENGTH) + "..." : content;
-    }
 
     private long getViewDeltaFromCounter(Long postId, Long viewerId) {
         long viewDelta = 0L;
@@ -168,95 +158,5 @@ public class GetPostService {
             log.warn("Redis view counter access failed for postId: {}", postId, ignore);
         }
         return viewDelta;
-    }
-
-    private List<Long> extractPostIds(List<Post> rows) {
-        return rows.stream().map(Post::getId).toList();
-    }
-
-    private List<PostList> mapPostsToResponseList(List<Post> rows, Map<Long, PostStats> stats,
-                                                  Set<Long> liked) {
-        return rows.stream()
-                .map(p -> mapToPostListResponse(p, stats, liked))
-                .toList();
-    }
-
-    private PostDetailResponse mapToPostDetailResponse(Post post, PostStats postStats, long viewCount,
-                                                       List<Comment> comments) {
-        return PostDetailResponse.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .postType(post.getPostType())
-                .writer(PostDetailResponse.WriterInfoResponse.of(
-                        post.getWriterInfo().getWriterId(),
-                        post.getWriterInfo().getWriterName(),
-                        post.getWriterInfo().getWriterProfileImageUrl()))
-                .stats(PostStatsResponse.from(
-                        postStats.getLikeCount(), viewCount, postStats.getCommentCount()))
-                .createdAt(post.getCreatedAt())
-                .comments(
-                        comments.stream()
-                                .map(comment -> PostDetailResponse.CommentResponse.of(
-                                        comment.getId(),
-                                        comment.getContent(),
-                                        PostDetailResponse.WriterInfoResponse.of(
-                                                comment.getWriterInfo().getWriterId(),
-                                                comment.getWriterInfo().getWriterName(),
-                                                comment.getWriterInfo().getWriterProfileImageUrl()
-                                        ),
-                                        comment.getCreatedAt()
-                                ))
-                                .toList()
-                )
-                .commentCount(comments.size())
-                .build();
-    }
-
-    private PostList mapToPostListResponse(Post p, Map<Long, PostStats> stats, Set<Long> liked) {
-        PostStats st = stats.get(p.getId());
-        long view = st.getViewCount();
-        long like = st.getLikeCount();
-        long comment = st.getCommentCount();
-
-        return PostList.of(
-                p.getId(),
-                p.getTitle(),
-                createContentSummary(p.getContent()), // 요약 메서드 이름 변경 적용
-                new PostStatsResponse(like, view, comment),
-                p.getCreatedAt(),
-                liked.contains(p.getId())
-        );
-    }
-
-    private PostOverview mapToPostOverviewResponse(Post p, PostStats st) {
-        return PostOverview.of(
-                p.getId(),
-                p.getTitle(),
-                createContentSummary(p.getContent()),
-                st.getCommentCount(),
-                p.getPostType()
-        );
-    }
-
-    private List<RecentPost> getRecentPosts(List<Post> latest, Map<Long, PostStats> statsMap) {
-        return latest.stream()
-                .map(p -> getRecentPost(p, statsMap))
-                .sorted(Comparator.comparing(RecentPost::postType))
-                .toList();
-    }
-
-    private RecentPost getRecentPost(Post p, Map<Long, PostStats> statsMap) {
-        PostStats st = statsMap.get(p.getId());
-        return mapToRecentPost(p, st);
-    }
-
-    private RecentPost mapToRecentPost(Post p, PostStats st) {
-        return RecentPost.of(
-                p.getId(),
-                p.getTitle(),
-                st.getCommentCount(),
-                p.getPostType()
-        );
     }
 }
