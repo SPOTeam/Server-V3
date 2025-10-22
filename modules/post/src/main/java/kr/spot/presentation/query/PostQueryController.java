@@ -38,7 +38,9 @@ public class PostQueryController {
                 ApiResponse.onSuccess(SuccessStatus._OK, getPostService.getPostDetail(postId, viewerId)));
     }
 
-    @Operation(summary = "게시글 리스트 조회", description = "게시글 리스트를 조회합니다. 마지막으로 본 게시글 이후의 게시글들을 페이징하여 가져옵니다.")
+    @Operation(summary = "게시글 리스트 조회", description = "게시글 리스트를 조회합니다. 마지막으로 본 게시글 이후의 게시글들을 페이징하여 가져옵니다."
+            + "게시글 유형별로 필터링이 가능합니다. 아무 조건을 입력하지 않은 경우, 전체 유형을 대상으로 조회합니다. "
+            + "또한 글자 수가 많은 게시글의 경우 일부 내용이 생략되어 제공됩니다. (현재 기준은 100자)")
     @GetMapping
     public ResponseEntity<ApiResponse<GetPostListResponse>> getPostList(
             @CurrentMember @Parameter(hidden = true) Long viewerId,
