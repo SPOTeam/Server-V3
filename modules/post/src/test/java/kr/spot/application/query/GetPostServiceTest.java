@@ -370,7 +370,8 @@ class GetPostServiceTest {
         PostOverviewResponse result = getPostService.getHotPosts();
 
         // then
-        assertThat(result).isNull();
+        assertThat(result).isNotNull();
+        assertThat(result.hotPosts()).isEmpty();
         verify(hotPostStore).getTop3();
         verify(postRepository, never()).getPostsByIds(any());
         verify(postQueryRepository, never()).findStatsByPostIds(any());
