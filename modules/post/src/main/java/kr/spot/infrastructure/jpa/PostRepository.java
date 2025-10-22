@@ -19,6 +19,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where p.id = :id")
     Optional<Post> findByIdWithLock(long id);
 
+    @Query("select p from Post p where p.postType = :postType order by p.id desc")
+    Optional<Post> findTopByPostTypeOrderByIdDesc(PostType postType);
+
     @Modifying
     @Query("""
               update Post p

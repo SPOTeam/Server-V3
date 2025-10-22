@@ -1,6 +1,7 @@
 package kr.spot.infrastructure.jpa.querydsl;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collection;
 import java.util.HashSet;
@@ -74,6 +75,19 @@ public class PostQueryRepository {
                                 like.postId.in(postIds))
                         .fetch()
         );
+    }
+
+    public List<Post> findLatestOnePerType() {
+        QPost p = QPost.post;
+        
+        return query.selectFrom(p)
+                .where(p.id.in(
+                        JPAExpressions
+                                .select(p.id.max())
+                                .from(p)
+                                .groupBy(p.postType)
+                ))
+                .fetch();
     }
 
 }

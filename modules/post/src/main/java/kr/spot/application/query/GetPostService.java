@@ -1,5 +1,6 @@
 package kr.spot.application.query;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,8 @@ import kr.spot.presentation.query.dto.response.PostListResponse.PostList;
 import kr.spot.presentation.query.dto.response.PostOverviewResponse;
 import kr.spot.presentation.query.dto.response.PostOverviewResponse.PostOverview;
 import kr.spot.presentation.query.dto.response.PostStatsResponse;
+import kr.spot.presentation.query.dto.response.RecentPostResponse;
+import kr.spot.presentation.query.dto.response.RecentPostResponse.RecentPost;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -112,14 +115,19 @@ public class GetPostService {
         return null;
     }
 
-    private PostOverview mapToPostOverviewResponse(Post p, PostStats st) {
-        return PostOverview.of(
-                p.getId(),
-                p.getTitle(),
-                createContentSummary(p.getContent()),
-                st.getCommentCount(),
-                p.getPostType()
-        );
+    public RecentPostResponse getRecentPosts() {
+        // 1) 타입별 최신 1건을 한 번에 가져옴
+        List<Post> latest = postQueryRepository.findLatestOnePerType();
+        if (latest.isEmpty()) {
+            return RecentPostResponse.of(List.of());
+        }
+
+        List<Long> ids = extractPostIds(latest);
+        Map<Long, PostStats> statsMap = postQueryRepository.findStatsByPostIds(ids);
+
+        // 3) 응답 변환
+        List<RecentPost> items = getRecentPosts(latest, statsMap);
+        return RecentPostResponse.of(items);
     }
 
     // ------------------------------------------------------------------------
@@ -159,7 +167,7 @@ public class GetPostService {
         return viewDelta;
     }
 
-    private static List<Long> extractPostIds(List<Post> rows) {
+    private List<Long> extractPostIds(List<Post> rows) {
         return rows.stream().map(Post::getId).toList();
     }
 
@@ -215,6 +223,37 @@ public class GetPostService {
                 new PostStatsResponse(like, view, comment),
                 p.getCreatedAt(),
                 liked.contains(p.getId())
+        );
+    }
+
+    private PostOverview mapToPostOverviewResponse(Post p, PostStats st) {
+        return PostOverview.of(
+                p.getId(),
+                p.getTitle(),
+                createContentSummary(p.getContent()),
+                st.getCommentCount(),
+                p.getPostType()
+        );
+    }
+
+    private List<RecentPost> getRecentPosts(List<Post> latest, Map<Long, PostStats> statsMap) {
+        return latest.stream()
+                .map(p -> getRecentPost(p, statsMap))
+                .sorted(Comparator.comparing(RecentPost::postType))
+                .toList();
+    }
+
+    private RecentPost getRecentPost(Post p, Map<Long, PostStats> statsMap) {
+        PostStats st = statsMap.get(p.getId());
+        return mapToRecentPost(p, st);
+    }
+
+    private RecentPost mapToRecentPost(Post p, PostStats st) {
+        return RecentPost.of(
+                p.getId(),
+                p.getTitle(),
+                st.getCommentCount(),
+                p.getPostType()
         );
     }
 }

@@ -12,6 +12,8 @@ import kr.spot.code.status.SuccessStatus;
 import kr.spot.domain.enums.PostType;
 import kr.spot.presentation.query.dto.response.PostDetailResponse;
 import kr.spot.presentation.query.dto.response.PostListResponse;
+import kr.spot.presentation.query.dto.response.PostOverviewResponse;
+import kr.spot.presentation.query.dto.response.RecentPostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,9 +57,16 @@ public class PostQueryController {
 
     @Operation(summary = "BEST 인기글 조회", description = "인기 게시글 3개를 조회합니다.")
     @GetMapping("/hot")
-    public ResponseEntity<ApiResponse<?>> getHotPosts() {
+    public ResponseEntity<ApiResponse<PostOverviewResponse>> getHotPosts() {
         return ResponseEntity.ok(
                 ApiResponse.onSuccess(SuccessStatus._OK, getPostService.getHotPosts()));
+    }
+
+    @Operation(summary = "최근 게시글 조회", description = "게시글 종류 별 최신 글을 조회합니다.")
+    @GetMapping("/recent")
+    public ResponseEntity<ApiResponse<RecentPostResponse>> getRecentPosts() {
+        return ResponseEntity.ok(
+                ApiResponse.onSuccess(SuccessStatus._OK, getPostService.getRecentPosts()));
     }
 
 
