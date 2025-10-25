@@ -46,6 +46,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 지역 관련
     _REGION_NOT_FOUND(404, "REGION404", "지역을 찾을 수 없습니다."),
+    _NO_SUCH_REGION(400, "REGION4000", "존재하지 않는 지역 코드입니다."),
     ;
 
     private final int httpStatus;

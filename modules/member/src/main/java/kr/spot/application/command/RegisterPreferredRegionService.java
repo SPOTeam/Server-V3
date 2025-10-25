@@ -39,12 +39,12 @@ public class RegisterPreferredRegionService {
         request.regionCodes().forEach(
                 regionCode -> {
                     if (!regionInfoPort.exists(regionCode)) {
-                        throw new GeneralException(ErrorStatus._NO_SUCH_CATEGORY);
+                        throw new GeneralException(ErrorStatus._NO_SUCH_REGION);
                     }
                 }
         );
     }
-    
+
     private void deleteAllPreviousPreferredRegions(Long memberId) {
         preferredRegionRepository.deleteAllByMemberId(memberId);
     }

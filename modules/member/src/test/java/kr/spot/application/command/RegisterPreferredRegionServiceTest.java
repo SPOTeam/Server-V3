@@ -96,7 +96,7 @@ class RegisterPreferredRegionServiceTest {
                 () -> sut.process(memberId, request));
 
         // then
-        assertThat(ex.getStatus()).isEqualTo(ErrorStatus._NO_SUCH_CATEGORY);
+        assertThat(ex.getStatus()).isEqualTo(ErrorStatus._NO_SUCH_REGION);
 
         verify(preferredRegionRepository).deleteAllByMemberId(memberId);
         verify(preferredRegionRepository, never()).saveAll(anyList());
