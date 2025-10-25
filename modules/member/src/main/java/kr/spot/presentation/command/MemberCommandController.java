@@ -7,8 +7,10 @@ import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
 import kr.spot.application.command.RegisterMemberInfoService;
 import kr.spot.application.command.RegisterPreferredCategoryService;
+import kr.spot.application.command.RegisterPreferredRegionService;
 import kr.spot.code.status.SuccessStatus;
 import kr.spot.presentation.command.dto.request.RegisterPreferredCategoryRequest;
+import kr.spot.presentation.command.dto.request.RegisterPreferredRegionRequest;
 import kr.spot.presentation.command.dto.request.UpdateMemberNameRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberCommandController {
 
     private final RegisterPreferredCategoryService registerPreferredCategoryService;
+    private final RegisterPreferredRegionService registerPreferredRegionService;
     private final RegisterMemberInfoService registerMemberInfoService;
 
     @Operation(summary = "선호 카테고리 등록", description = "회원의 선호 카테고리를 등록합니다. 한 번 저장 후 다시 호출하면 덮어씁니다. (이전 데이터 삭제)")
@@ -33,6 +36,16 @@ public class MemberCommandController {
             @CurrentMember @Parameter(hidden = true) Long memberId
     ) {
         registerPreferredCategoryService.process(memberId, request);
+        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
+    }
+
+    @Operation(summary = "선호 지역 등록", description = "회원의 선호 지역를 등록합니다. 한 번 저장 후 다시 호출하면 덮어씁니다. (이전 데이터 삭제)")
+    @PostMapping("/preferred-regions")
+    public ResponseEntity<ApiResponse<Void>> registerPreferredRegions(
+            @RequestBody RegisterPreferredRegionRequest request,
+            @CurrentMember @Parameter(hidden = true) Long memberId
+    ) {
+        registerPreferredRegionService.process(memberId, request);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 

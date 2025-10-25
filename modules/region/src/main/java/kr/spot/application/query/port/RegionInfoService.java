@@ -16,8 +16,8 @@ public class RegionInfoService implements RegionInfoPort {
     private final RegionRepository regionRepository;
 
     @Override
-    public boolean isValidRegionCode(String regionCode) {
-        return regionRepository.existsByCode(regionCode);
+    public boolean exists(String regionCode) {
+        return regionRepository.existsById(regionCode);
     }
 
     @Override

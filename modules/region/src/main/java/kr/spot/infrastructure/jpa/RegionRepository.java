@@ -10,6 +10,4 @@ public interface RegionRepository extends JpaRepository<Region, String> {
     default Region getRegionById(String id) {
         return findById(id).orElseThrow(() -> new GeneralException(ErrorStatus._REGION_NOT_FOUND));
     }
-
-    boolean existsByCode(String code);
 }

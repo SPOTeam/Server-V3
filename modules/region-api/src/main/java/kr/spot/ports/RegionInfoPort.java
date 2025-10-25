@@ -4,7 +4,7 @@ import kr.spot.ports.dto.RegionInfo;
 
 public interface RegionInfoPort {
 
-    boolean isValidRegionCode(String regionCode);
+    boolean exists(String regionCode);
 
     RegionInfo getRegionInfoByCode(String regionCode);
 }
