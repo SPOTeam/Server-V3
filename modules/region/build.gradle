@@ -4,9 +4,11 @@ plugins {
 }
 
 dependencies {
+    implementation project(":common:api")
     implementation project(":common:snowflake")
 
     implementation project(":modules:shared")
+    implementation project(":modules:region-api")
 
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 }

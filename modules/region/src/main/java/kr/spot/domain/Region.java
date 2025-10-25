@@ -13,7 +13,7 @@ import org.hibernate.annotations.Immutable;
 
 @Getter
 @Entity
-@Immutable // ← Hibernate용 Immutable 권장
+@Immutable
 @Table(name = "region",
         indexes = {
                 @Index(name = "ux_region_code", columnList = "code", unique = true),
