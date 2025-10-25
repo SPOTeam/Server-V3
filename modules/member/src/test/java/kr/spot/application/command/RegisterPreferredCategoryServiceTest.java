@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import kr.spot.IdGenerator;
 import kr.spot.code.status.ErrorStatus;
-import kr.spot.domain.PreferredCategory;
+import kr.spot.domain.association.PreferredCategory;
 import kr.spot.exception.GeneralException;
 import kr.spot.infrastructure.jpa.PreferredCategoryRepository;
 import kr.spot.ports.CategoryCatalogPort;

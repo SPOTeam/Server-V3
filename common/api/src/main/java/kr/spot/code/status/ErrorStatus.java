@@ -43,6 +43,10 @@ public enum ErrorStatus implements BaseErrorCode {
     _ONLY_AUTHOR_CAN_MODIFY(403, "POST403", "게시글 및 댓글 수정은 작성자만 가능합니다."),
     _ALREADY_LIKED(400, "POST4000", "이미 좋아요를 누른 게시글입니다."),
     _ALREADY_UNLIKED(400, "POST4001", "좋아요를 누르지 않은 게시글입니다."),
+
+    // 지역 관련
+    _REGION_NOT_FOUND(404, "REGION404", "지역을 찾을 수 없습니다."),
+    _NO_SUCH_REGION(400, "REGION4000", "존재하지 않는 지역 코드입니다."),
     ;
 
     private final int httpStatus;

@@ -1,10 +1,9 @@
 package kr.spot.infrastructure.jpa;
 
-import kr.spot.domain.association.PreferredCategory;
+import kr.spot.domain.association.PreferredRegion;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PreferredCategoryRepository extends JpaRepository<PreferredCategory, Long> {
+public interface PreferredRegionRepository extends JpaRepository<PreferredRegion, Long> {
 
     void deleteAllByMemberId(Long memberId);
-
 }

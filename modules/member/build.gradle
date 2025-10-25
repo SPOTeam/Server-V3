@@ -12,6 +12,7 @@ dependencies {
     implementation project(":modules:study-api")
     implementation project(":modules:auth-api")
     implementation project(":modules:member-api")
+    implementation project(":modules:region-api")
 
     // Spring Boot Starters
     implementation "org.springframework.boot:spring-boot-starter-web"
