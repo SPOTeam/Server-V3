@@ -9,12 +9,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.NaturalId;
-import org.springframework.data.annotation.Immutable;
+import org.hibernate.annotations.Immutable;
 
 @Getter
 @Entity
-@Immutable
+@Immutable // ← Hibernate용 Immutable 권장
 @Table(name = "region",
         indexes = {
                 @Index(name = "ux_region_code", columnList = "code", unique = true),
@@ -25,9 +24,6 @@ import org.springframework.data.annotation.Immutable;
 public class Region {
 
     @Id
-    private Long id;
-
-    @NaturalId
     @Column(nullable = false, updatable = false, length = 20)
     private String code;
 
@@ -39,8 +35,4 @@ public class Region {
 
     @Column(nullable = false, length = 50)
     private String neighborhood;
-
-    public static Region of(Long id, String code, String province, String district, String neighborhood) {
-        return new Region(id, code, province, district, neighborhood);
-    }
 }
