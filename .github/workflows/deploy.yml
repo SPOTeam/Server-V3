@@ -1,0 +1,87 @@
+name: CD with Gradle
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_DOMAIN: ${{ secrets.DEPLOY_DOMAIN }}
+      HEALTH_CHECK_PATH: ${{ secrets.HEALTH_CHECK_PATH }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: "adopt"
+
+      - name: Make application.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.PROPERTIES }}" > src/main/resources/application-prod.yml
+
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+
+      - name: Docker build & push to docker repo
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }} .
+          docker push ${{ secrets.DOCKER_REPO }}
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        id: deploy
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          script: |
+            DOMAIN="${{ env.DEPLOY_DOMAIN }}" 
+            HEALTH_CHECK_PATH="${{ env.HEALTH_CHECK_PATH }}"
+            echo "Deploying to domain: ${DOMAIN}"
+            
+            sudo docker pull ${{ secrets.DOCKER_REPO }}:latest
+            
+            ENV_COLOR=$(curl --silent --fail https://${DOMAIN}/${HEALTH_CHECK_PATH} || echo "none")
+            
+            if [[ "$ENV_COLOR" == "blue" || "$ENV_COLOR" == "none" ]]; then
+              sudo docker-compose -f docker-compose.yml up -d --no-deps web-green
+              sleep 75
+              if curl --silent --fail http://localhost:8081; then
+                echo "Green server is working correctly."
+                sudo sed -i 's/8080/8081/' "/etc/nginx/sites-available/${DOMAIN}"
+                sudo systemctl restart nginx
+                sudo docker-compose -f docker-compose.yml stop web-blue
+              else
+                echo "Green server is not responding correctly. Exiting."
+                exit 1
+              fi
+            elif [[ "$ENV_COLOR" == "green" ]]; then
+              sudo docker-compose -f docker-compose.yml up -d --no-deps web-blue
+              sleep 75
+              if curl --silent --fail http://localhost:8080; then
+                echo "Blue server is working correctly."
+                sudo sed -i 's/8081/8080/' "/etc/nginx/sites-available/${DOMAIN}"
+                sudo systemctl restart nginx
+                sudo docker-compose -f docker-compose.yml stop web-green
+              else
+                echo "Blue server is not responding correctly. Exiting."
+                exit 1
+              fi
+            else
+              echo "Unable to determine current environment, exiting."
+              exit 1
+            fi
