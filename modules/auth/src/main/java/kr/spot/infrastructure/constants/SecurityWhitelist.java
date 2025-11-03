@@ -7,6 +7,7 @@ public abstract class SecurityWhitelist {
     public static final String[] EXACT_MATCH = {
             "/health",
             "/api/members",
+            "/api/current-env",
             "/swagger-ui.html",
     };
 
