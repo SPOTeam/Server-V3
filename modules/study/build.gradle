@@ -1,5 +1,4 @@
 plugins {
-    id "org.springframework.boot"
     id "io.spring.dependency-management"
     id "java"
 }
@@ -11,6 +10,7 @@ dependencies {
 
     implementation project(":modules:shared")
     implementation project(":modules:auth-api")
+    implementation project(":modules:study-api")
 
     // Spring Boot Starters
     implementation "org.springframework.boot:spring-boot-starter-web"
@@ -22,4 +22,6 @@ dependencies {
 
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+
+
 }

@@ -15,9 +15,13 @@ dependencies {
     implementation project(":modules:auth")
     implementation project(":modules:study")
     implementation project(":modules:member")
+    implementation project(":modules:post")
+    implementation project(":modules:region")
 
     implementation project(":modules:member-api")
     implementation project(":modules:auth-api")
+    implementation project(":modules:study-api")
+    implementation project(":modules:region-api")
 
 //    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -31,4 +35,10 @@ dependencies {
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+
+    //
+    implementation "org.springframework.boot:spring-boot-starter-validation"
 }

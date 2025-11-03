@@ -1,7 +1,7 @@
 package kr.spot.application.token;
 
 
-import kr.spot.presentation.dto.TokenDTO;
+import kr.spot.presentation.command.dto.TokenDTO;
 
 public interface TokenProvider {
 

@@ -20,9 +20,11 @@ import kr.spot.infrastructure.oauth.client.dto.oauth.naver.NaverUser;
 import kr.spot.infrastructure.oauth.client.naver.NaverApiClient;
 import kr.spot.infrastructure.oauth.client.naver.NaverAuthClient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class NaverOauth {
@@ -58,7 +60,7 @@ public class NaverOauth {
 
     public NaverOAuthTokenDTO requestAccessToken(String code) {
         return naverAuthClient.getNaverAccessToken(
-                GRANT_TYPE_AUTHORIZATION_CODE, NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, NAVER_CALLBACK_LOGIN_URL, code);
+                GRANT_TYPE_AUTHORIZATION_CODE, NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, code, NAVER_CALLBACK_LOGIN_URL);
     }
 
 
