@@ -2,6 +2,9 @@ package kr.spot.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
@@ -24,6 +27,18 @@ public class StudyCommandController {
 
     @Tag(name = "스터디")
     @Operation(summary = "스터디 생성", description = "새로운 스터디를 생성합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "생성 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = """
+                    - `COMMON4000`: 잘못된 요청입니다. (예: 유효하지 않은 카테고리/스타일/지역 코드, 스터디 이름 공백, 최대 인원 수 음수, 유효하지 않은 스터디 비용)
+                    - `MEMBER4001`: 이름은 null 또는 공백일 수 없습니다.
+                    - `STUDY4000`: 최대 인원 수는 양수여야 합니다.
+                    - `STUDY4000`: 유효하지 않은 스터디 비용입니다.
+                    - `STUDY4001`: 존재하지 않는 카테고리입니다.
+                    - `REGION4000`: 존재하지 않는 지역 코드입니다.
+                    """, content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다.", content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class)))
+    })
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createStudy(@RequestBody CreateStudyRequest request,
                                                          @CurrentMember @Parameter(hidden = true) Long memberId) {
