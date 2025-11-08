@@ -24,6 +24,8 @@ dependencies {
     implementation project(":modules:study-api")
     implementation project(":modules:region-api")
 
+    implementation project(":infra:bucket-s3")
+
 //    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
