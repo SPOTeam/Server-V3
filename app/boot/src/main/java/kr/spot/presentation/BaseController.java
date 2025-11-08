@@ -1,6 +1,7 @@
 package kr.spot.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.spot.ApiResponse;
 import kr.spot.code.status.SuccessStatus;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class BaseController {
 
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK")
+    })
     @GetMapping("/health-check")
     public ResponseEntity<ApiResponse<String>> healthCheck() {
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._OK, "OK"));

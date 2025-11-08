@@ -9,7 +9,6 @@ public record CreateStudyRequest(
         Integer maxMembers,
         Boolean hasFee,
         Integer amount,
-        String imageUrl,
         String description,
         Set<Category> categories,
         Set<Style> styles,
