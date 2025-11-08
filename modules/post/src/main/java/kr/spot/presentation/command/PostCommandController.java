@@ -20,9 +20,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "게시글")
 @RestController
@@ -41,11 +42,13 @@ public class PostCommandController {
     })
     @PostMapping
     public ResponseEntity<ApiResponse<CreatePostResponse>> createPost(
-            @RequestBody ManagePostRequest request,
-            @CurrentMember @Parameter(hidden = true) Long writerId
+            @RequestPart ManagePostRequest request,
+            @CurrentMember @Parameter(hidden = true) Long writerId,
+            @RequestPart(required = false) MultipartFile imageFile
     ) {
         return ResponseEntity.ok(
-                ApiResponse.onSuccess(SuccessStatus._CREATED, managePostService.createPost(request, writerId)));
+                ApiResponse.onSuccess(SuccessStatus._CREATED,
+                        managePostService.createPost(request, writerId, imageFile)));
     }
 
     @Operation(summary = "게시글 수정", description = "기존 게시글을 수정합니다.")
@@ -58,9 +61,11 @@ public class PostCommandController {
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
             @PathVariable Long postId,
-            @RequestBody ManagePostRequest request,
-            @CurrentMember @Parameter(hidden = true) Long writerId) {
-        managePostService.updatePost(postId, request, writerId);
+            @RequestPart ManagePostRequest request,
+            @CurrentMember @Parameter(hidden = true) Long writerId,
+            @RequestPart(required = false) MultipartFile imageFile
+    ) {
+        managePostService.updatePost(postId, request, writerId, imageFile);
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._NO_CONTENT));
     }
 

@@ -36,6 +36,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     int updatePost(@Param("postId") Long postId,
                    @Param("title") String title,
                    @Param("content") String content,
+                   @Param("")
                    @Param("postType") PostType postType,
                    @Param("writerId") Long writerId);
 
