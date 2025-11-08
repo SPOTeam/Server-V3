@@ -14,6 +14,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _BAD_REQUEST(404, "COMMON4000", "잘못된 요청입니다."),
     _UNAUTHORIZED(401, "COMMON4001", "인증되지 않은 요청입니다."),
     _FORBIDDEN(403, "COMMON4002", "접근이 거부되었습니다."),
+    _FAIL_TO_UPLOAD_FILE(400, "COMMON4003", "파일 업로드에 실패했습니다."),
 
     // JWT 관련
     _EMPTY_JWT(400, "COMMON4005", "JWT 토큰이 비어있습니다."),

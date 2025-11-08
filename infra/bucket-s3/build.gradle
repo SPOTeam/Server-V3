@@ -1,0 +1,16 @@
+plugins {
+    id "io.spring.dependency-management"
+    id "java"
+}
+
+
+dependencies {
+    implementation project(":common:api")
+    implementation project(":common:bucket")
+
+    // Spring Boot Starters
+    implementation "org.springframework.boot:spring-boot-starter-web"
+
+    // s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+}

@@ -2,6 +2,9 @@ package kr.spot.presentation.command;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.spot.ApiResponse;
 import kr.spot.annotations.CurrentMember;
@@ -28,6 +31,14 @@ public class CommentCommandController {
     private final ManageCommentService commentService;
 
     @Operation(summary = "댓글 작성", description = "특정 게시글에 새로운 댓글을 작성합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "작성 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다.", content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = """
+                    - `MEMBER404`: 회원을 찾을 수 없습니다.
+                    - `POST404`: 게시글을 찾을 수 없습니다.
+                    """, content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class)))
+    })
     @PostMapping("/{postId}/comments")
     public ResponseEntity<ApiResponse<CreateCommentResponse>> createComment(
             @CurrentMember @Parameter(hidden = true) Long writerId,
@@ -38,6 +49,12 @@ public class CommentCommandController {
     }
 
     @Operation(summary = "댓글 수정", description = "기존 댓글을 수정합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "수정 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다.", content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "수정 권한이 없습니다.", content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "`COMMENT404`: 댓글을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class)))
+    })
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse<Void>> updateComment(
             @PathVariable Long commentId,
@@ -48,6 +65,12 @@ public class CommentCommandController {
     }
 
     @Operation(summary = "댓글 삭제", description = "기존 댓글을 삭제합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "삭제 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다.", content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "삭제 권한이 없습니다.", content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "`COMMENT404`: 댓글을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = kr.spot.ApiResponse.class)))
+    })
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
             @PathVariable Long commentId,

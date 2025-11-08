@@ -21,12 +21,13 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-
-
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
     // Feign
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3"
     testImplementation("io.github.openfeign:feign-core")
+    
+    // s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }

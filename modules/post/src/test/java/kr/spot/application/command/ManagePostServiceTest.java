@@ -17,9 +17,11 @@ import kr.spot.domain.Post;
 import kr.spot.domain.enums.PostType;
 import kr.spot.domain.vo.WriterInfo;
 import kr.spot.exception.GeneralException;
+import kr.spot.infrastructure.jpa.PostImageRepository;
 import kr.spot.infrastructure.jpa.PostLikeRepository;
 import kr.spot.infrastructure.jpa.PostRepository;
 import kr.spot.infrastructure.jpa.PostStatsRepository;
+import kr.spot.ports.FileStoragePort;
 import kr.spot.ports.GetWriterInfoPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -39,6 +41,9 @@ class ManagePostServiceTest {
     GetWriterInfoPort getWriterInfoPort;
 
     @Mock
+    FileStoragePort fileStoragePort;
+
+    @Mock
     PostRepository postRepository;
 
     @Mock
@@ -47,12 +52,16 @@ class ManagePostServiceTest {
     @Mock
     PostLikeRepository postLikeRepository;
 
+    @Mock
+    PostImageRepository postImageRepository;
+
     ManagePostService managePostService;
     LikePostService likePostService;
 
     @BeforeEach
     void setUp() {
-        managePostService = new ManagePostService(idGenerator, getWriterInfoPort, postRepository, postStatsRepository);
+        managePostService = new ManagePostService(idGenerator, getWriterInfoPort, fileStoragePort, postRepository,
+                postStatsRepository, postImageRepository);
         likePostService = new LikePostService(idGenerator, postLikeRepository, postStatsRepository);
     }
 
@@ -85,7 +94,7 @@ class ManagePostServiceTest {
 
         // when & then
         assertThatThrownBy(() ->
-                managePostService.updatePost(POST_ID, PostFixture.updatePostRequest(), OTHER_WRITER_ID)
+                managePostService.updatePost(POST_ID, PostFixture.updatePostRequest(), OTHER_WRITER_ID, null)
         ).isInstanceOf(GeneralException.class);
     }
 

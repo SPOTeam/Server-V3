@@ -5,6 +5,7 @@ include 'app:config'
 
 include 'common:snowflake'
 include 'common:api'
+include 'common:bucket'
 
 include 'modules:shared'
 include 'modules:member'
@@ -17,3 +18,5 @@ include 'modules:member-api'
 include 'modules:auth-api'
 include 'modules:study-api'
 include 'modules:region-api'
+
+include 'infra:bucket-s3'
