@@ -89,7 +89,7 @@ class KaKaoOauthTest {
                 .thenReturn(mockUser);
 
         // when
-        KaKaoUser user = kakao.requestUserInfo(token);
+        KaKaoUser user = kakao.requestUserInfo(token.access_token());
 
         // then
         assertThat(user).isNotNull();

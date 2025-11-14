@@ -24,4 +24,9 @@ public class OAuthService {
         OAuthStrategy strategy = strategyFactory.getStrategy(loginType);
         return oAuthMemberProcessor.processOAuthMember(strategy.getOAuthProfile(code));
     }
+
+    public TokenDTO getOAuthProfileForClient(LoginType loginType, String accessToken) {
+        OAuthStrategy strategy = strategyFactory.getStrategy(loginType);
+        return oAuthMemberProcessor.processOAuthMember(strategy.getOAuthProfileForClient(accessToken));
+    }
 }
