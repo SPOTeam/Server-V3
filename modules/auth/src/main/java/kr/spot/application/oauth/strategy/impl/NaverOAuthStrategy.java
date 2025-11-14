@@ -29,6 +29,15 @@ public class NaverOAuthStrategy implements OAuthStrategy {
     @Override
     public OAuthProfile getOAuthProfile(String code) {
         NaverOAuthTokenDTO token = naverOauth.requestAccessToken(code);
+        return requestOAuthProfile(token.access_token());
+    }
+
+    @Override
+    public OAuthProfile getOAuthProfileForClient(String accessToken) {
+        return requestOAuthProfile(accessToken);
+    }
+
+    private OAuthProfile requestOAuthProfile(String token) {
         NaverUser user = naverOauth.requestUserInfo(token);
         return OAuthProfile.of(
                 getType(), user.response().email(), user.response().name(),

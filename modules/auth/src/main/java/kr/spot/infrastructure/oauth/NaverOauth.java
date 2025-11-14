@@ -29,20 +29,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NaverOauth {
 
-    @Value("${spring.oauth2.naver.client-id}")
-    private String NAVER_CLIENT_ID;
-
-    @Value("${spring.oauth2.naver.client-secret}")
-    private String NAVER_CLIENT_SECRET;
-
-    @Value("${spring.oauth2.naver.callback-url}")
-    private String NAVER_CALLBACK_LOGIN_URL;
-
-    @Value("${spring.oauth2.naver.url}")
-    private String NAVER_SNS_URL;
-
     private final NaverAuthClient naverAuthClient;
     private final NaverApiClient naverApiClient;
+    @Value("${spring.oauth2.naver.client-id}")
+    private String NAVER_CLIENT_ID;
+    @Value("${spring.oauth2.naver.client-secret}")
+    private String NAVER_CLIENT_SECRET;
+    @Value("${spring.oauth2.naver.callback-url}")
+    private String NAVER_CALLBACK_LOGIN_URL;
+    @Value("${spring.oauth2.naver.url}")
+    private String NAVER_SNS_URL;
 
     public String getOauthRedirectURL() {
         Map<String, Object> params = new HashMap<>();
@@ -63,12 +59,11 @@ public class NaverOauth {
                 GRANT_TYPE_AUTHORIZATION_CODE, NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, code, NAVER_CALLBACK_LOGIN_URL);
     }
 
-
-    public NaverUser requestUserInfo(NaverOAuthTokenDTO naverOAuthTokenDTO) {
-        return naverApiClient.getNaverUserInfo(getAccessToken(naverOAuthTokenDTO));
+    public NaverUser requestUserInfo(String accessToken) {
+        return naverApiClient.getNaverUserInfo(getAccessToken(accessToken));
     }
 
-    private static String getAccessToken(NaverOAuthTokenDTO naverOAuthTokenDTO) {
-        return BEARER_PREFIX + naverOAuthTokenDTO.access_token();
+    private String getAccessToken(String accessToken) {
+        return BEARER_PREFIX + accessToken;
     }
 }

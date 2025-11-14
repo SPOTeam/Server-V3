@@ -66,4 +66,16 @@ public class OAuthController {
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._OK,
                 oAuthService.getOAuthProfile(LoginType.valueOf(type.toUpperCase()), code)));
     }
+
+    @Operation(summary = "소셜 로그인 클라이언트용 처리",
+            description = "클라이언트에서 받은 액세스 토큰을 통해 로그인 또는 회원가입을 처리합니다. " +
+                    "예: /api/oauth/client/kakao?accessToken=YOUR_ACCESS_TOKEN")
+    @GetMapping("/client/{type}")
+    public ResponseEntity<ApiResponse<TokenDTO>> socialLoginForClient(
+            @PathVariable("type") String type,
+            @RequestParam("accessToken") String accessToken
+    ) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._OK,
+                oAuthService.getOAuthProfileForClient(LoginType.valueOf(type.toUpperCase()), accessToken)));
+    }
 }

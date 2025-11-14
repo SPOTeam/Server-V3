@@ -26,17 +26,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KaKaoOauth {
 
+    private final KaKaoApiClient kaKaoApiClient;
+    private final KaKaoAuthClient kaKaoAuthClient;
     @Value("${spring.oauth2.kakao.url}")
     private String KAKAO_SNS_URL;
-
     @Value("${spring.oauth2.kakao.client-id}")
     private String KAKAO_SNS_CLIENT_ID;
-
     @Value("${spring.oauth2.kakao.callback-login-url}")
     private String KAKAO_SNS_CALLBACK_LOGIN_URL;
 
-    private final KaKaoApiClient kaKaoApiClient;
-    private final KaKaoAuthClient kaKaoAuthClient;
+    private static String getAccessToken(String accessToken) {
+        return JwtConstants.BEARER_PREFIX + accessToken;
+    }
 
     public String getOauthRedirectURL() {
         Map<String, Object> params = new HashMap<>();
@@ -56,13 +57,8 @@ public class KaKaoOauth {
                 CONTENT_TYPE, GRANT_TYPE_AUTHORIZATION_CODE, KAKAO_SNS_CALLBACK_LOGIN_URL, KAKAO_SNS_CLIENT_ID, code);
     }
 
-
-    public KaKaoUser requestUserInfo(KaKaoOAuthTokenDTO kaKaoOAuthTokenDTO) {
-        return kaKaoApiClient.getKaKaoUserInfo(getAccessToken(kaKaoOAuthTokenDTO), CONTENT_TYPE);
-    }
-
-    private static String getAccessToken(KaKaoOAuthTokenDTO kaKaoOAuthTokenDTO) {
-        return JwtConstants.BEARER_PREFIX + kaKaoOAuthTokenDTO.access_token();
+    public KaKaoUser requestUserInfo(String accessToken) {
+        return kaKaoApiClient.getKaKaoUserInfo(getAccessToken(accessToken), CONTENT_TYPE);
     }
 
 

@@ -88,7 +88,7 @@ class NaverOauthTest {
         when(naverApiClient.getNaverUserInfo("Bearer atk")).thenReturn(user);
 
         // when
-        NaverUser result = naver.requestUserInfo(token);
+        NaverUser result = naver.requestUserInfo(token.access_token());
 
         // then
         assertThat(result).isNotNull();

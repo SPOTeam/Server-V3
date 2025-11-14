@@ -10,5 +10,7 @@ public interface OAuthStrategy {
 
     String getOauthRedirectURL();
 
-    OAuthProfile getOAuthProfile(String code); // 전략별 구현에서 Member 객체 생성
+    OAuthProfile getOAuthProfile(String code);
+
+    OAuthProfile getOAuthProfileForClient(String accessToken);
 }
