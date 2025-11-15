@@ -33,6 +33,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ManageCommentServiceTest {
 
+    final Long WRITER_ID = 100L;
+    final Long OTHER_ID = 200L;
+    final Long POST_ID = 10L;
+    final Long COMMENT_ID = 999L;
+    final String CONTENT = "hello world";
+
     @Mock
     IdGenerator idGenerator;
     @Mock
@@ -41,16 +47,8 @@ class ManageCommentServiceTest {
     CommentRepository commentRepository;
     @Mock
     PostStatsRepository postStatsRepository;
-
     @InjectMocks
     ManageCommentService service;
-
-    // 공통 픽스처 값
-    final Long WRITER_ID = 100L;
-    final Long OTHER_ID = 200L;
-    final Long POST_ID = 10L;
-    final Long COMMENT_ID = 999L;
-    final String CONTENT = "hello world";
 
     @Test
     @DisplayName("새 댓글 생성 시 댓글 저장 및 포스트 댓글 수 증가가 호출되어야 한다")

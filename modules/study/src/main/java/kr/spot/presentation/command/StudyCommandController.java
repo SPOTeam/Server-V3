@@ -1,4 +1,4 @@
-package kr.spot.presentation;
+package kr.spot.presentation.command;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

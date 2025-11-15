@@ -26,6 +26,7 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Study extends BaseEntity {
 
+    public static final int CURRENT_MEMBERS = 1;
     @Id
     private Long id;
 
@@ -36,6 +37,9 @@ public class Study extends BaseEntity {
 
     @Column(nullable = false)
     private Integer maxMembers;
+
+    @Column(nullable = false)
+    private Integer currentMembers = 1;
 
     @Embedded
     private Fee fee;
@@ -53,7 +57,8 @@ public class Study extends BaseEntity {
                            String description) {
         validateStudyNameIsNotBlank(name);
         validateMaxMembers(maxMembers);
-        return new Study(id, leaderId, name, maxMembers, fee, imageUrl, description, RecruitingStatus.RECRUITING);
+        return new Study(id, leaderId, name, maxMembers, CURRENT_MEMBERS, fee, imageUrl, description,
+                RecruitingStatus.RECRUITING);
     }
 
     private static void validateStudyNameIsNotBlank(String name) {
