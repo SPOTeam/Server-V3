@@ -4,21 +4,23 @@ import java.util.List;
 
 public record GetStudyOverviewResponse(
         List<StudyOverview> content,
-        long totalElements,
-        int page,
-        int size,
-        int totalPages
+        boolean hasNext,
+        Long nextCursor
 ) {
-    public static GetStudyOverviewResponse of(List<StudyOverview> content, long totalElements, int page,
-                                              int size) {
-        int totalPages = size > 0 ? (int) Math.ceil((double) totalElements / size) : 1;
-        return new GetStudyOverviewResponse(content, totalElements, page, size, totalPages);
+
+    public static GetStudyOverviewResponse of(
+            List<StudyOverview> content,
+            boolean hasNext,
+            Long nextCursor
+    ) {
+        return new GetStudyOverviewResponse(content, hasNext, nextCursor);
     }
 
     public record StudyOverview(
-            String title,
+            long id,
+            String name,
             String description,
-            int totalMembers,
+            int maxMembers,
             int currentMembers,
             long likeCount,
             boolean isLiked,
@@ -27,6 +29,7 @@ public record GetStudyOverviewResponse(
     ) {
 
         public static StudyOverview of(
+                long id,
                 String title,
                 String description,
                 int totalMembers,
@@ -37,6 +40,7 @@ public record GetStudyOverviewResponse(
                 String profileImageUrl
         ) {
             return new StudyOverview(
+                    id,
                     title,
                     description,
                     totalMembers,
