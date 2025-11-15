@@ -33,12 +33,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ManageCommentServiceTest {
 
-    // 공통 픽스처 값
     final Long WRITER_ID = 100L;
     final Long OTHER_ID = 200L;
     final Long POST_ID = 10L;
     final Long COMMENT_ID = 999L;
     final String CONTENT = "hello world";
+
     @Mock
     IdGenerator idGenerator;
     @Mock
@@ -118,7 +118,7 @@ class ManageCommentServiceTest {
         service.deleteComment(WRITER_ID, COMMENT_ID);
 
         // then
-        assertThat(comment.getStudyMemberStatus()).isEqualTo(Status.INACTIVE);
+        assertThat(comment.getStatus()).isEqualTo(Status.INACTIVE);
         verify(postStatsRepository, times(1)).decreaseCommentCount(POST_ID);
     }
 
@@ -135,6 +135,6 @@ class ManageCommentServiceTest {
         ).isInstanceOf(GeneralException.class);
 
         verify(postStatsRepository, never()).decreaseCommentCount(anyLong());
-        assertThat(comment.getStudyMemberStatus()).isEqualTo(Status.ACTIVE);
+        assertThat(comment.getStatus()).isEqualTo(Status.ACTIVE);
     }
 }
