@@ -2,7 +2,9 @@ package kr.spot.presentation.query;
 
 import io.swagger.v3.oas.annotations.Operation;
 import kr.spot.ApiResponse;
+import kr.spot.annotations.CurrentMember;
 import kr.spot.code.status.SuccessStatus;
+import kr.spot.domain.enums.StudyMemberStatus;
 import kr.spot.presentation.query.dto.response.GetStudyOverviewResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,35 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class StudyQueryController {
 
-    // 내가 모집중인 스터디
-    @Operation(summary = "내가 모집중인 스터디 조회",
-            description = "내가 모집중인 스터디를 조회합니다. (page, size 파라미터로 페이징 처리 가능)")
-    @GetMapping("/me/recruiting")
-    public ResponseEntity<ApiResponse<GetStudyOverviewResponse>> getMyRecruitedStudies(
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size
-    ) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._OK, null));
-    }
-
-    @Operation(summary = "대기중인 스터디 조회",
-            description = "대기중인 스터디를 조회합니다. (page, size 파라미터로 페이징 처리 가능)"
-                    + "현재 신청 기능이 없으므로 빈 응답을 반환합니다.")
-    @GetMapping("/me/waiting")
-    public ResponseEntity<ApiResponse<GetStudyOverviewResponse>> getMyWaitingStudies(
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size
-    ) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._OK, null));
-    }
-
-    @Operation(summary = "신청한 스터디 조회",
-            description = "내가 신청한 스터디를 조회합니다. (page, size 파라미터로 페이징 처리 가능) "
-                    + "현재 신청 기능이 없으므로 빈 응답을 반환합니다.")
-    @GetMapping("/me/applied")
-    public ResponseEntity<ApiResponse<GetStudyOverviewResponse>> getMyAppliedStudies(
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size
+    @Operation(summary = "마이페이지 스터디 조회",
+            description = "마이페이지에 필요한 스터디를 조회합니다.\n"
+                    + "모집 중인 스터디 : status = OWNER (기본값)\n"
+                    + "참여 중인 스터디 : status = APPROVED\n "
+                    + "대기 중인 스터디 : status = APPLIED")
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<GetStudyOverviewResponse>> getMyStudies(
+            @RequestParam(required = false, defaultValue = "OWNER") StudyMemberStatus status,
+            @CurrentMember Long memberId
     ) {
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._OK, null));
     }
@@ -53,8 +35,6 @@ public class StudyQueryController {
             description = "지금 가장 인기있는 스터디를 조회합니다. (page, size 파라미터로 페이징 처리 가능)")
     @GetMapping("/hot")
     public ResponseEntity<ApiResponse<GetStudyOverviewResponse>> getHotStudies(
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size
     ) {
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._OK, null));
     }
@@ -63,8 +43,6 @@ public class StudyQueryController {
             description = "추천하는 스터디를 조회합니다. (page, size 파라미터로 페이징 처리 가능)")
     @GetMapping("/recommended")
     public ResponseEntity<ApiResponse<GetStudyOverviewResponse>> getRecommendedStudies(
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size
     ) {
         return ResponseEntity.ok(ApiResponse.onSuccess(SuccessStatus._OK, null));
     }
